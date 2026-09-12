@@ -54,3 +54,8 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Ignore all .env files with any extension...
+.env.*
+# ...except for the example file (this will be tracked by git)
+!.env.example
