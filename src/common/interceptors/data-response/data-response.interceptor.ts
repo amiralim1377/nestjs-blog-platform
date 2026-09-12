@@ -8,19 +8,45 @@ import { ConfigService } from '@nestjs/config';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+export interface StandardResponse<T> {
+  apiVersion: string;
+  success: boolean;
+  statusCode: number;
+  message: string;
+  timestamp: string;
+  data: T | null;
+}
+
 @Injectable()
-export class DataResponseInterceptor implements NestInterceptor {
+export class DataResponseInterceptor<T> implements NestInterceptor<
+  T,
+  StandardResponse<T>
+> {
   constructor(private readonly configService: ConfigService) {}
 
   intercept(
     context: ExecutionContext,
-    next: CallHandler<any>,
-  ): Observable<any> {
+    next: CallHandler<T>,
+  ): Observable<StandardResponse<T>> {
+    const ctx = context.switchToHttp();
+    const response = ctx.getResponse();
+    const statusCode = response.statusCode;
+
     return next.handle().pipe(
-      map((data) => ({
-        apiVersion: this.configService.get('appConfig.apiVersion') || '1.0',
-        data: data || null,
-      })),
+      map((data: any) => {
+        const message = data?.message || 'درخواست با موفقیت پردازش شد';
+        const responseData =
+          data?.data !== undefined ? data.data : data || null;
+
+        return {
+          apiVersion: this.configService.get('appConfig.apiVersion') || '1.0',
+          success: true,
+          statusCode,
+          message,
+          timestamp: new Date().toISOString(),
+          data: responseData,
+        };
+      }),
     );
   }
 }
