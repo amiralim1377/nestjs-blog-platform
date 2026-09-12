@@ -8,6 +8,8 @@ import databaseConfig from './config/database.config.js';
 import { LoggerModule } from 'nestjs-pino';
 import { UsersModule } from './modules/users/users.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -62,6 +64,12 @@ const ENV = process.env.NODE_ENV;
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: DataResponseInterceptor,
+    },
+  ],
 })
 export class AppModule {}
