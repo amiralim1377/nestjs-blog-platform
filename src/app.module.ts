@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config.js';
 import enviromentValidation from './config/enviroment.validation.js';
 import databaseConfig from './config/database.config.js';
 import { LoggerModule } from 'nestjs-pino';
+import { UsersModule } from './modules/users/users.module.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -41,6 +43,23 @@ const ENV = process.env.NODE_ENV;
             : undefined,
       },
     }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return {
+          type: 'postgres',
+          synchronize: configService.get('database.synchronize'),
+          port: configService.get('database.port'),
+          username: configService.get('database.user'),
+          password: configService.get('database.password'),
+          host: configService.get('database.host'),
+          autoLoadEntities: configService.get('database.autoLoadEntities'),
+          database: configService.get('database.name'),
+        };
+      },
+    }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
