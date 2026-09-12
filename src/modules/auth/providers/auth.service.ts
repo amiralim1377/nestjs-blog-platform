@@ -1,26 +1,21 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from '../dto/create-auth.dto.js';
-import { UpdateAuthDto } from '../dto/update-auth.dto.js';
+import { LoginDto } from '../dto/login.dto.js';
+import { LoginProvider } from './authentication/login.provider.js';
+import { RefreshTokenDto } from '../dto/refresh-token.dto.js';
+import { RefreshTokensProvider } from './authentication/refresh-tokens.provider.js';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly loginProvider: LoginProvider,
+    private readonly refreshTokenProvider: RefreshTokensProvider,
+  ) {}
+
+  async login(loginDto: LoginDto) {
+    return await this.loginProvider.login(loginDto);
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    return await this.refreshTokenProvider.refreshTokens(refreshTokenDto);
   }
 }
