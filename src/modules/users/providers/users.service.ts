@@ -7,7 +7,7 @@ import { CreateUserDto } from '../dto/create-user.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity.js';
 import { Repository } from 'typeorm';
-import { HashingProvider } from '../../auth/providers/hashing.provider.js';
+import { HashingProvider } from '../../auth/providers/hashing/hashing.provider.js';
 
 @Injectable()
 export class UsersService {
@@ -57,5 +57,38 @@ export class UsersService {
 
     // Create the user
     return newUser;
+  }
+
+  async findByEmail(email: string) {
+    const user = await this.usersRepository.findOne({
+      where: { email: email },
+    });
+
+    return user;
+  }
+
+  /**
+   * Find a single user using the ID of the user
+   */
+  async findById(id: string) {
+    let user = undefined;
+    try {
+      user = await this.usersRepository.findOneBy({
+        id,
+      });
+    } catch (e) {
+      throw new RequestTimeoutException(
+        'Unable to process your request at the moment please try later',
+        {
+          description: 'Error connecting to database',
+        },
+      );
+    }
+
+    if (!user) {
+      throw new BadRequestException('The user id does not exist');
+    }
+
+    return user;
   }
 }
