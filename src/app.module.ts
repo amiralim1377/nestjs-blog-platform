@@ -12,6 +12,8 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { RedisModule } from './modules/redis/redis.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -62,6 +64,28 @@ const ENV = process.env.NODE_ENV;
           database: configService.get('database.name'),
         };
       },
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: ConfigModule,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        throttlers: [
+          {
+            name: 'global',
+            ttl: parseInt(
+              configService.get<string>('THROTTLE_TTL', '60000'),
+              10,
+            ),
+            limit: parseInt(
+              configService.get<string>('THROTTLE_LIMIT', '100'),
+              10,
+            ),
+          },
+        ],
+        storage: new ThrottlerStorageRedisService(
+          configService.get<string>('REDIS_URL') || 'redis://localhost:6379',
+        ),
+      }),
     }),
     UsersModule,
     AuthModule,
