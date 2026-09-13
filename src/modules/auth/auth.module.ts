@@ -13,6 +13,7 @@ import { GenerateTokensProvider } from './providers/tokens/generate-tokens.provi
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './guards/authentication/authentication.guard.js';
 import { AccessTokenGuard } from './guards/access-token/access-token.guard.js';
+import { LogoutProvider } from './providers/authentication/logout-provider.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AccessTokenGuard } from './guards/access-token/access-token.guard.js';
   providers: [
     AuthService,
     LoginProvider,
+    LogoutProvider,
     RefreshTokensProvider,
     GenerateTokensProvider,
     AccessTokenGuard,
