@@ -24,7 +24,7 @@ export class UsersService {
       existingUser = await this.usersRepository.findOne({
         where: { email: createUserDto.email },
       });
-    } catch (error) {
+    } catch {
       throw new RequestTimeoutException(
         'Unable to process your request at the moment please try later',
         {
@@ -46,7 +46,7 @@ export class UsersService {
 
     try {
       newUser = await this.usersRepository.save(newUser);
-    } catch (error) {
+    } catch {
       throw new RequestTimeoutException(
         'Unable to process your request at the moment please try later',
         {
@@ -76,7 +76,7 @@ export class UsersService {
       user = await this.usersRepository.findOneBy({
         id,
       });
-    } catch (e) {
+    } catch {
       throw new RequestTimeoutException(
         'Unable to process your request at the moment please try later',
         {
