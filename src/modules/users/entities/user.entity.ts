@@ -3,11 +3,14 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserRole } from '../enums/user-role.enum.js';
 import { Exclude } from 'class-transformer';
+import { Post } from '../../posts/entities/post.entity.js';
 
 @Entity('users')
 export class User {
@@ -58,4 +61,7 @@ export class User {
   @DeleteDateColumn()
   @Exclude()
   deletedAt: Date;
+
+  @OneToMany(() => Post, (post) => post.author)
+  posts?: Relation<Post>[];
 }
