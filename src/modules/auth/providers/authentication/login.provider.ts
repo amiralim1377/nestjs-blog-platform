@@ -2,7 +2,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  RequestTimeoutException,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../../../users/providers/users.service.js';
@@ -21,7 +21,7 @@ export class LoginProvider {
   ) {}
 
   public async login(loginDto: LoginDto) {
-    let user = await this.usersService.findByEmail(loginDto.email);
+    const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
       throw new UnauthorizedException('email or password is wrong');
@@ -40,7 +40,7 @@ export class LoginProvider {
         user.password,
       );
     } catch (error) {
-      throw new RequestTimeoutException(error, {
+      throw new InternalServerErrorException(error, {
         description: 'Could not compare password',
       });
     }
