@@ -49,7 +49,7 @@ export class AccessTokenGuard implements CanActivate {
       // 5. Attach the decoded payload to the request object.
       // This makes the user data available to controllers in subsequent steps.
       request[REQUEST_USER_KEY] = payload;
-    } catch (error) {
+    } catch {
       // Catch validation errors and throw a standard 401 Unauthorized response
       throw new UnauthorizedException('Invalid or expired token');
     }
