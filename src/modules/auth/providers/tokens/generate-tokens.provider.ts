@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../../config/jwt.config.js';
 import type { ConfigType } from '@nestjs/config';
 import { User } from '../../../users/entities/user.entity.js';
-import { ActiveUserData } from '../../interfaces/active-user-data.interface.js';
+import type { ActiveUserData } from '../../interfaces/active-user-data.interface.js';
 import { randomUUID } from 'crypto';
+
 @Injectable()
 export class GenerateTokensProvider {
   constructor(
@@ -36,22 +37,29 @@ export class GenerateTokensProvider {
     );
   }
 
-  public async generateTokens(user: User) {
+  public async generateTokens(user: User, familyId?: string) {
+    const currentFamilyId = familyId || randomUUID();
+
     const [accessToken, refreshToken] = await Promise.all([
-      // generate the accessToken
-      this.signToken<Partial<ActiveUserData>>(
+      // Generate the Access Token
+      this.signToken<Partial<ActiveUserData> & { familyId: string }>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         this.jwtConfiguration.secret,
         {
           email: user.email,
+          familyId: currentFamilyId,
         },
       ),
-      // generate the refreshToken
-      this.signToken(
+
+      // Generate the Refresh Token
+      this.signToken<{ familyId: string }>(
         user.id,
         this.jwtConfiguration.refreshTokenTtl,
         this.jwtConfiguration.refreshTokenSecret,
+        {
+          familyId: currentFamilyId,
+        },
       ),
     ]);
 
