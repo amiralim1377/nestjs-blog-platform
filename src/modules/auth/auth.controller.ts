@@ -8,6 +8,8 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './providers/auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
@@ -15,6 +17,7 @@ import { Auth } from './decorator/auth.decorator.js';
 import { AuthType } from './enums/auth-type.enum.js';
 import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import type { Request, Response } from 'express';
+import { AuthCreateUserDto } from './dto/createUser.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +25,24 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly cookieProvider: CookieProvider,
   ) {}
+
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  @Auth(AuthType.None)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async register(
+    @Body() createUserDto: AuthCreateUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const result = await this.authService.register(createUserDto);
+
+    this.cookieProvider.setRefreshTokenCookie(response, result.refreshToken);
+
+    return {
+      accessToken: result.accessToken,
+      user: result.user,
+    };
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
