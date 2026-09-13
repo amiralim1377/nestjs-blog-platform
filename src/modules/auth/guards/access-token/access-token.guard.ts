@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import type { ConfigType } from '@nestjs/config';
@@ -10,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '../../config/jwt.config.js';
 import type { Request } from 'express';
 import { REQUEST_USER_KEY } from '../../constants/auth.constants.js';
+import type { Redis } from 'ioredis';
+import { RedisKeys } from '../../../redis/redis.keys.js';
 
 /**
  * Guard responsible for validating JWT Access Tokens.
@@ -24,6 +27,7 @@ export class AccessTokenGuard implements CanActivate {
     // Injecting custom JWT configuration (e.g., secret key, expiration times)
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -38,6 +42,22 @@ export class AccessTokenGuard implements CanActivate {
       throw new UnauthorizedException('Token not provided');
     }
 
+    let isBlacklisted: string | null;
+
+    try {
+      const redisKey = RedisKeys.blacklistToken(token);
+      isBlacklisted = await this.redisClient.get(redisKey);
+    } catch {
+      throw new InternalServerErrorException(
+        'Failed to check token blacklist status.',
+      );
+    }
+
+    if (isBlacklisted) {
+      throw new UnauthorizedException(
+        'Your session has expired. Please log in again.',
+      );
+    }
     try {
       // 4. Verify the token using the secret and configuration options.
       // verifyAsync will automatically throw an error if the token is invalid or expired.
