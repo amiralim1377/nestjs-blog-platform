@@ -18,6 +18,7 @@ import { AuthType } from './enums/auth-type.enum.js';
 import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import type { Request, Response } from 'express';
 import { AuthCreateUserDto } from './dto/createUser.dto.js';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -30,6 +31,7 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   @Auth(AuthType.None)
   @UseInterceptors(ClassSerializerInterceptor)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   async register(
     @Body() createUserDto: AuthCreateUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -47,6 +49,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.None)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -63,6 +66,7 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.Bearer)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   async logout(
     @Headers('authorization') authHeader: string,
     @Req() request: Request,
