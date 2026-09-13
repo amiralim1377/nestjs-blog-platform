@@ -14,6 +14,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './guards/authentication/authentication.guard.js';
 import { AccessTokenGuard } from './guards/access-token/access-token.guard.js';
 import { LogoutProvider } from './providers/authentication/logout-provider.js';
+import { CookieProvider } from './providers/cookie/cookie.provider.js';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { LogoutProvider } from './providers/authentication/logout-provider.js';
     RefreshTokensProvider,
     GenerateTokensProvider,
     AccessTokenGuard,
+    CookieProvider,
     {
       provide: HashingProvider,
       useClass: ArgonProvider,
