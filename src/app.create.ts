@@ -2,8 +2,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { HttpAdapterHost } from '@nestjs/core';
+import { SentryFilter } from './common/filters/sentry.filter.js';
 
 export function appCreate(app: INestApplication): void {
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new SentryFilter(httpAdapter));
+
   // Enable global validation pipes using class-validator
   // This validates incoming requests, strips unauthorized properties, and automatically transforms payloads to DTO classes
   app.useGlobalPipes(
@@ -40,5 +45,11 @@ export function appCreate(app: INestApplication): void {
   SwaggerModule.setup('api', app, document);
 
   // Enable Cross-Origin Resource Sharing (CORS) to allow requests from external frontend applications
-  app.enableCors();
+  app.enableCors({
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? ['https://your-frontend-domain.com']
+        : '*',
+    credentials: true,
+  });
 }
