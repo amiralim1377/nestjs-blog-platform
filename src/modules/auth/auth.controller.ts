@@ -26,9 +26,12 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.Bearer)
-  async logout(@Headers('authorization') authHeader: string) {
+  async logout(
+    @Headers('authorization') authHeader: string,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
     const accessToken = authHeader.split(' ')[1];
-    return this.authService.logout(accessToken);
+    return this.authService.logout(accessToken, refreshTokenDto.refreshToken);
   }
 
   @Post('refresh-tokens')
