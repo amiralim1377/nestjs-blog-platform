@@ -1,6 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 
 export function appCreate(app: INestApplication): void {
   // use validation pipes
@@ -17,6 +18,9 @@ export function appCreate(app: INestApplication): void {
 
   //   pino-loger-config
   app.useLogger(app.get(Logger));
+
+  // add cookieParser
+  app.use(cookieParser());
 
   //   swagger-config
   const config = new DocumentBuilder()
