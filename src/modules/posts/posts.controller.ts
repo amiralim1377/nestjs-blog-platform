@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
+  Req,
 } from '@nestjs/common';
 import { PostsService } from './providers/posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
@@ -16,6 +18,8 @@ import type { ActiveUserData } from '../auth/interfaces/active-user-data.interfa
 import { Auth } from '../auth/decorator/auth.decorator.js';
 import { AuthType } from '../auth/enums/auth-type.enum.js';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import type { Request } from 'express';
+import { GetPostsDto } from './dto/get-posts.dto.js';
 
 @Controller('posts')
 export class PostsController {
@@ -50,5 +54,18 @@ export class PostsController {
     @ActiveUser() user: ActiveUserData,
   ) {
     return this.postsService.delete(id, user);
+  }
+
+  @Get()
+  @Auth(AuthType.Bearer)
+  @ApiOperation({ summary: 'Returns all posts with pagination and filters.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Posts were successfully retrieved.',
+  })
+  public getAllPosts(@Query() postQuery: GetPostsDto, @Req() request: Request) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+
+    return this.postsService.findAll(postQuery, currentUrl);
   }
 }
