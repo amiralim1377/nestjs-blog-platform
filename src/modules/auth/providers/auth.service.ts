@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { LoginDto } from '../dto/login.dto.js';
-import { LoginProvider } from './authentication/login.provider.js';
+import { LoginProvider } from './authentication/login-provider.js';
 import { RefreshTokenDto } from '../dto/refresh-token.dto.js';
 import { RefreshTokensProvider } from './authentication/refresh-tokens.provider.js';
 import { LogoutProvider } from './authentication/logout-provider.js';
+import { AuthCreateUserDto } from '../dto/createUser.dto.js';
+import { RegisterProvider } from './authentication/register-provider.js';
 
 @Injectable()
 export class AuthService {
@@ -11,7 +13,12 @@ export class AuthService {
     private readonly loginProvider: LoginProvider,
     private readonly refreshTokenProvider: RefreshTokensProvider,
     private readonly logoutProvider: LogoutProvider,
+    private readonly registerProvider: RegisterProvider,
   ) {}
+
+  async register(createUserDto: AuthCreateUserDto) {
+    return await this.registerProvider.register(createUserDto);
+  }
 
   async login(loginDto: LoginDto) {
     return await this.loginProvider.login(loginDto);
