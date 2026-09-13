@@ -4,7 +4,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 
 export function appCreate(app: INestApplication): void {
-  // use validation pipes
+  // Enable global validation pipes using class-validator
+  // This validates incoming requests, strips unauthorized properties, and automatically transforms payloads to DTO classes
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -16,13 +17,13 @@ export function appCreate(app: INestApplication): void {
     }),
   );
 
-  //   pino-loger-config
+  // Override the default NestJS logger with Pino for highly performant, structured logging
   app.useLogger(app.get(Logger));
 
-  // add cookieParser
+  // Initialize cookie-parser middleware to read and parse cookie headers from incoming requests
   app.use(cookieParser());
 
-  //   swagger-config
+  // Configure OpenAPI (Swagger) builder for API documentation
   const config = new DocumentBuilder()
     .setTitle('Blog app Api')
     .setDescription('use the base API URL as http://localhost:3000')
@@ -32,9 +33,12 @@ export function appCreate(app: INestApplication): void {
     .setVersion('1.0')
     .build();
 
+  // Generate the Swagger document based on the configuration
   const document = SwaggerModule.createDocument(app, config);
 
+  // Mount the Swagger UI module on the '/api' route
   SwaggerModule.setup('api', app, document);
 
+  // Enable Cross-Origin Resource Sharing (CORS) to allow requests from external frontend applications
   app.enableCors();
 }
