@@ -16,6 +16,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { PostsModule } from './modules/posts/posts.module.js';
 import { PaginationModule } from './common/pagination/pagination.module.js';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -89,6 +90,7 @@ const ENV = process.env.NODE_ENV;
         ),
       }),
     }),
+    SentryModule.forRoot(),
     UsersModule,
     AuthModule,
     RedisModule,
