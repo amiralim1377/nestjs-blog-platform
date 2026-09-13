@@ -18,7 +18,7 @@ import { Redis } from 'ioredis';
         if (!redisUrl) {
           throw new Error('REDIS_URL is not defined in .env file!');
         }
-        return new Redis(redisUrl);
+        return new Redis(redisUrl, { family: 4 });
       },
     },
   ],
