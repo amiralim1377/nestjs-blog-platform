@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { RedisModule } from './modules/redis/redis.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
+import { PostsModule } from './modules/posts/posts.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -90,6 +91,7 @@ const ENV = process.env.NODE_ENV;
     UsersModule,
     AuthModule,
     RedisModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [
