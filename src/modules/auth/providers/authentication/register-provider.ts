@@ -1,8 +1,11 @@
 import {
   BadRequestException,
+  ConflictException,
   forwardRef,
   Inject,
   Injectable,
+  InternalServerErrorException,
+  Logger,
   RequestTimeoutException,
 } from '@nestjs/common';
 import { UsersService } from '../../../users/providers/users.service.js';
@@ -13,6 +16,8 @@ import type { UsersService as UsersServiceType } from '../../../users/providers/
 
 @Injectable()
 export class RegisterProvider {
+  private readonly logger = new Logger(RegisterProvider.name);
+
   constructor(
     @Inject(forwardRef(() => UsersService))
     private readonly usersService: UsersServiceType,
@@ -27,6 +32,10 @@ export class RegisterProvider {
       // Check if user with email exists
       existingUser = await this.usersService.findByEmail(createUserDto.email);
     } catch (error) {
+      this.logger.error(
+        `Database error while checking email: ${createUserDto.email}`,
+        error,
+      );
       throw new RequestTimeoutException(
         'Unable to process your request at the moment please try later',
         { description: 'Error connecting to database' },
@@ -34,25 +43,35 @@ export class RegisterProvider {
     }
 
     if (existingUser) {
-      throw new BadRequestException(
-        'The user already exists, please check your email',
+      throw new ConflictException(
+        'The user already exists, please check your email.',
       );
     }
 
     let newUser;
     try {
-      // FIX: Added 'await' to the create method
+      const hashedPassword = await this.hashingProvider.hashPassword(
+        createUserDto.password,
+      );
       newUser = await this.usersService.create({
         ...createUserDto,
-        password: await this.hashingProvider.hashPassword(
-          createUserDto.password,
-        ),
+        password: hashedPassword,
       });
     } catch (error) {
-      throw new RequestTimeoutException(
-        'Unable to process your request at the moment please try later',
-        { description: 'Error connecting to database' },
+      this.logger.error(
+        `Error creating new user: ${createUserDto.email}`,
+        error,
       );
+
+      const dbError = error as { code?: string };
+
+      if (dbError.code === '23505' || dbError.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException(
+          'The user already exists, please check your email.',
+        );
+      }
+
+      throw new InternalServerErrorException('Unable to create user account.');
     }
 
     // Now 'newUser' is properly resolved before passing to generateTokens
