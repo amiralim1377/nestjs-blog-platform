@@ -41,7 +41,7 @@ export class LoginProvider {
       this.logger.error(
         `Redis Error (GET) for email: ${loginDto.email}`,
         error,
-      ); // 👈 لاگر اضافه شد
+      );
       throw new InternalServerErrorException(
         'Failed to check account lockout status.',
       );
