@@ -1,13 +1,7 @@
 export const RedisKeys = {
   /**
    *
-   * @example 'blacklist:eyJhbGci...'
+   * @example 'blacklist:9a59670a-cbf0-420e-a7ad-deba3fcb1589'
    */
-  blacklistToken: (token: string) => `blacklist:${token}`,
-
-  // 💡 مثال برای آینده: اگر خواستید پروفایل یوزر را کش کنید
-  // userProfile: (userId: number) => `user:profile:${userId}`,
-
-  // 💡 مثال برای آینده: محدود کردن تعداد درخواست‌ها (Rate Limiting)
-  // rateLimit: (ip: string) => `rate-limit:${ip}`,
+  blacklistToken: (jti: string) => `blacklist:${jti}`,
 };
