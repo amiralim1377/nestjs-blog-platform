@@ -9,6 +9,9 @@ import { CreatePostProvider } from './actions/create-post.provider.js';
 import { UpdatePostDto } from '../dto/update-post.dto.js';
 import { UpdatePostProvider } from './actions/update-post.provider.js';
 import { DeletePostProvider } from './actions/delete-post.provider.js';
+import { PaginationQueryDto } from '../../../common/pagination/dto/pagination.query.dto.js';
+import { FindAllPostsProvider } from './actions/find-all-post.provider.js';
+import { GetPostsDto } from '../dto/get-posts.dto.js';
 
 @Injectable()
 export class PostsService {
@@ -19,6 +22,7 @@ export class PostsService {
     private readonly createPostProvider: CreatePostProvider,
     private readonly UpdatePostProvider: UpdatePostProvider,
     private readonly deletePostProvider: DeletePostProvider,
+    private readonly findAllPostsProvider: FindAllPostsProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -33,8 +37,8 @@ export class PostsService {
     return await this.deletePostProvider.delete(postId, user);
   }
 
-  async findAll(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
+  public async findAll(postQuery: GetPostsDto, currentUrl: string) {
+    return await this.findAllPostsProvider.findAll(postQuery, currentUrl);
   }
 
   async findBySlug(postId: number, user: ActiveUserData) {
