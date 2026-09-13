@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Headers,
+} from '@nestjs/common';
 import { AuthService } from './providers/auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
@@ -14,6 +21,14 @@ export class AuthController {
   @Auth(AuthType.None)
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.Bearer)
+  async logout(@Headers('authorization') authHeader: string) {
+    const accessToken = authHeader.split(' ')[1];
+    return this.authService.logout(accessToken);
   }
 
   @Post('refresh-tokens')
