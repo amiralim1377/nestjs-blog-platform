@@ -1,4 +1,10 @@
-import { Global, Module, OnApplicationShutdown } from '@nestjs/common';
+import {
+  Global,
+  Inject,
+  Module,
+  OnApplicationShutdown,
+  OnModuleInit,
+} from '@nestjs/common';
 import { Redis } from 'ioredis';
 
 @Global()
@@ -18,8 +24,23 @@ import { Redis } from 'ioredis';
   ],
   exports: ['REDIS_CLIENT'],
 })
-export class RedisModule implements OnApplicationShutdown {
+export class RedisModule implements OnApplicationShutdown, OnModuleInit {
+  constructor(@Inject('REDIS_CLIENT') private readonly redisClient: Redis) {}
+
+  async onModuleInit() {
+    try {
+      const response = await this.redisClient.ping();
+
+      if (response === 'PONG') {
+        console.log('✅ Successfully connected to Redis (Upstash).');
+      }
+    } catch (error: any) {
+      console.error('❌ Failed to connect to Redis:', error.message);
+    }
+  }
+
   onApplicationShutdown(signal?: string) {
     console.log(`Closing Redis connection gracefully on ${signal}...`);
+    this.redisClient.quit();
   }
 }
