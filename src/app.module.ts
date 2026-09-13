@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { RedisModule } from './modules/redis/redis.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -64,6 +65,7 @@ const ENV = process.env.NODE_ENV;
     }),
     UsersModule,
     AuthModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
