@@ -15,6 +15,7 @@ import { RedisModule } from './modules/redis/redis.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { PostsModule } from './modules/posts/posts.module.js';
+import { PaginationModule } from './common/pagination/pagination.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -92,6 +93,7 @@ const ENV = process.env.NODE_ENV;
     AuthModule,
     RedisModule,
     PostsModule,
+    PaginationModule,
   ],
   controllers: [AppController],
   providers: [
