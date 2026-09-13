@@ -16,18 +16,22 @@ import { RedisKeys } from '../../../redis/redis.keys.js';
 
 /**
  * Guard responsible for validating JWT Access Tokens.
- * It extracts the token from the request header, verifies it,
- * and attaches the decoded user payload to the request object.
+ * Responsibilities:
+ * 1. Extract the token from the request header.
+ * 2. Verify the digital signature and expiration date.
+ * 3. Check if the token's unique ID (JTI) is in the Redis blacklist.
+ * 4. Attach the decoded user payload to the Request object for later use.
  */
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
   constructor(
-    // Service to handle JWT verification
     private readonly jwtService: JwtService,
-    // Injecting custom JWT configuration (e.g., secret key, expiration times)
+
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-    @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
+
+    @Inject('REDIS_CLIENT')
+    private readonly redisClient: Redis,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -36,57 +40,55 @@ export class AccessTokenGuard implements CanActivate {
 
     // 2. Extract the token from the Authorization header
     const token = this.extractTokenFromHeader(request);
-
-    // 3. If no token is found, deny access immediately
     if (!token) {
       throw new UnauthorizedException('Token not provided');
     }
 
-    let isBlacklisted: string | null;
+    let payload: any;
 
+    // 3. Verify the token (checks signature and expiration automatically)
     try {
-      const redisKey = RedisKeys.blacklistToken(token);
-      isBlacklisted = await this.redisClient.get(redisKey);
+      payload = await this.jwtService.verifyAsync(token, this.jwtConfiguration);
     } catch {
-      throw new InternalServerErrorException(
-        'Failed to check token blacklist status.',
-      );
-    }
-
-    if (isBlacklisted) {
-      throw new UnauthorizedException(
-        'Your session has expired. Please log in again.',
-      );
-    }
-    try {
-      // 4. Verify the token using the secret and configuration options.
-      // verifyAsync will automatically throw an error if the token is invalid or expired.
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        this.jwtConfiguration,
-      );
-
-      // 5. Attach the decoded payload to the request object.
-      // This makes the user data available to controllers in subsequent steps.
-      request[REQUEST_USER_KEY] = payload;
-    } catch {
-      // Catch validation errors and throw a standard 401 Unauthorized response
       throw new UnauthorizedException('Invalid or expired token');
     }
 
-    // 6. If everything is successful, allow the request to proceed
+    // 4. Check the Blacklist in Redis using the JTI standard
+    if (payload.jti) {
+      let isBlacklisted: string | null;
+
+      try {
+        // NOTE: We pass the short 'jti' payload instead of the raw long token
+        const redisKey = RedisKeys.blacklistToken(payload.jti);
+        isBlacklisted = await this.redisClient.get(redisKey);
+      } catch {
+        throw new InternalServerErrorException(
+          'Failed to check token blacklist status.',
+        );
+      }
+
+      // If the JTI exists in Redis, it means the session has been revoked
+      if (isBlacklisted) {
+        throw new UnauthorizedException(
+          'Your session has been revoked. Please log in again.',
+        );
+      }
+    }
+
+    // 5. Attach the decoded payload to the request object.
+    // Controllers can now access this data (e.g., using a custom @ActiveUser() decorator)
+    request[REQUEST_USER_KEY] = payload;
+
+    // 6. Grant access to the route
     return true;
   }
 
   /**
    * Helper method to extract the JWT token from the standard 'Authorization' header.
-   * Expects the format: "Bearer <token>"
+   * Expected format: "Bearer <token>"
    */
   private extractTokenFromHeader(request: Request): string | undefined {
-    // Split the header value by space. Defaults to an empty array if undefined.
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
-
-    // Return the token only if the type is exactly 'Bearer', otherwise return undefined
     return type === 'Bearer' ? token : undefined;
   }
 }
