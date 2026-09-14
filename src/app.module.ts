@@ -3,7 +3,7 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import appConfig from './config/app.config.js';
-import enviromentValidation from './config/environment.validation.js';
+import enviromentValidation from './config/enviroment.validation.js';
 import databaseConfig from './config/database.config.js';
 import { LoggerModule } from 'nestjs-pino';
 import { UsersModule } from './modules/users/users.module.js';
