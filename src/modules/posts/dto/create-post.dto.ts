@@ -9,8 +9,8 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
-import { PostType } from '../enums/postType.enum.js';
-import { PostStatus } from '../enums/postStatus.enum.js';
+import { PostType } from '../enums/post-type.enum.js';
+import { PostStatus } from '../enums/post-status.enum.js';
 import { Type } from 'class-transformer';
 
 export class CreatePostDto {
