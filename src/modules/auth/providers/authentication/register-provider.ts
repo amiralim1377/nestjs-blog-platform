@@ -1,12 +1,11 @@
 import {
-  BadRequestException,
   ConflictException,
   forwardRef,
+  GatewayTimeoutException,
   Inject,
   Injectable,
   InternalServerErrorException,
   Logger,
-  RequestTimeoutException,
 } from '@nestjs/common';
 import { UsersService } from '../../../users/providers/users.service.js';
 import { HashingProvider } from '../hashing/hashing.provider.js';
@@ -33,10 +32,15 @@ export class RegisterProvider {
       existingUser = await this.usersService.findByEmail(createUserDto.email);
     } catch (error) {
       this.logger.error(
-        `Database error while checking email: ${createUserDto.email}`,
-        error,
+        {
+          err: error,
+          email: createUserDto.email,
+          action: 'RegisterProvider',
+        },
+        'Database error while checking email',
       );
-      throw new RequestTimeoutException(
+
+      throw new GatewayTimeoutException(
         'Unable to process your request at the moment please try later',
         { description: 'Error connecting to database' },
       );
@@ -53,6 +57,7 @@ export class RegisterProvider {
       const hashedPassword = await this.hashingProvider.hashPassword(
         createUserDto.password,
       );
+
       newUser = await this.usersService.create({
         ...createUserDto,
         password: hashedPassword,
