@@ -39,6 +39,7 @@ export class AuthController {
     const result = await this.authService.register(createUserDto);
 
     this.cookieProvider.setRefreshTokenCookie(response, result.refreshToken);
+    this.cookieProvider.setAccessTokenCookie(response, result.accessToken);
 
     return {
       accessToken: result.accessToken,
@@ -57,15 +58,17 @@ export class AuthController {
     const tokens = await this.authService.login(loginDto);
 
     this.cookieProvider.setRefreshTokenCookie(response, tokens.refreshToken);
+    this.cookieProvider.setAccessTokenCookie(response, tokens.accessToken);
 
     return {
       accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async logout(
     @Headers('authorization') authHeader: string,
@@ -78,6 +81,7 @@ export class AuthController {
     const result = await this.authService.logout(accessToken, refreshToken);
 
     this.cookieProvider.clearRefreshTokenCookie(response);
+    this.cookieProvider.clearAccessTokenCookie(response);
 
     return result;
   }
@@ -98,9 +102,11 @@ export class AuthController {
     const tokens = await this.authService.refreshTokens({ refreshToken });
 
     this.cookieProvider.setRefreshTokenCookie(response, tokens.refreshToken);
+    this.cookieProvider.setAccessTokenCookie(response, tokens.accessToken);
 
     return {
       accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 }
