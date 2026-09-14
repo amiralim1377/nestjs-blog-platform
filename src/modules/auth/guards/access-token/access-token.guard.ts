@@ -1,18 +1,12 @@
 import {
   CanActivate,
   ExecutionContext,
-  Inject,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { ConfigType } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import jwtConfig from '../../config/jwt.config.js';
 import type { Request } from 'express';
 import { REQUEST_USER_KEY } from '../../constants/auth.constants.js';
-import type { Redis } from 'ioredis';
-import { RedisKeys } from '../../../redis/redis.keys.js';
+import { AuthService } from '../../providers/auth.service.js';
 
 /**
  * Guard responsible for validating JWT Access Tokens.
@@ -24,15 +18,7 @@ import { RedisKeys } from '../../../redis/redis.keys.js';
  */
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-
-    @Inject(jwtConfig.KEY)
-    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-
-    @Inject('REDIS_CLIENT')
-    private readonly redisClient: Redis,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     // 1. Extract the HTTP request object from the execution context
@@ -41,38 +27,16 @@ export class AccessTokenGuard implements CanActivate {
     // 2. Extract the token from the Authorization header
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('Token not provided');
+      throw new UnauthorizedException('Token not provided in headers');
     }
 
     let payload: any;
 
     // 3. Verify the token (checks signature and expiration automatically)
     try {
-      payload = await this.jwtService.verifyAsync(token, this.jwtConfiguration);
+      payload = await this.authService.validateTokenAndCheckBlacklist(token);
     } catch {
       throw new UnauthorizedException('Invalid or expired token');
-    }
-
-    // 4. Check the Blacklist in Redis using the JTI standard
-    if (payload.jti) {
-      let isBlacklisted: string | null;
-
-      try {
-        // NOTE: We pass the short 'jti' payload instead of the raw long token
-        const redisKey = RedisKeys.blacklistToken(payload.jti);
-        isBlacklisted = await this.redisClient.get(redisKey);
-      } catch {
-        throw new InternalServerErrorException(
-          'Failed to check token blacklist status.',
-        );
-      }
-
-      // If the JTI exists in Redis, it means the session has been revoked
-      if (isBlacklisted) {
-        throw new UnauthorizedException(
-          'Your session has been revoked. Please log in again.',
-        );
-      }
     }
 
     // 5. Attach the decoded payload to the request object.
