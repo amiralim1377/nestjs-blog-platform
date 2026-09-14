@@ -1,7 +1,7 @@
 import { IntersectionType } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
-import { PostStatus } from '../enums/postStatus.enum.js';
+import { PostStatus } from '../enums/post-status.enum.js';
 import { PaginationQueryDto } from '../../../common/pagination/dto/pagination.query.dto.js';
 
 class GetPostsBaseDto {
