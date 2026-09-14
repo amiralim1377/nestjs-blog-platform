@@ -20,19 +20,9 @@ export class CreateUserProvider {
   async create(createUserDto: CreateUserDto) {
     let existingUser = undefined;
 
-    try {
-      // Check if user with email exists
-      existingUser = await this.usersRepository.findOne({
-        where: { email: createUserDto.email },
-      });
-    } catch {
-      throw new RequestTimeoutException(
-        'Unable to process your request at the moment please try later',
-        {
-          description: 'Error connecting to database',
-        },
-      );
-    }
+    existingUser = await this.usersRepository.findOne({
+      where: { email: createUserDto.email },
+    });
 
     if (existingUser) {
       this.logger.warn(
@@ -48,17 +38,13 @@ export class CreateUserProvider {
       ...createUserDto,
     });
 
-    try {
-      return await this.usersRepository.save(newUser);
-    } catch (error) {
-      this.logger.error(`Failed to save user: ${createUserDto.email}`, error);
+    const savedUser = await this.usersRepository.save(newUser);
 
-      throw new RequestTimeoutException(
-        'Unable to process your request at the moment please try later',
-        {
-          description: 'Error connecting to database',
-        },
-      );
-    }
+    this.logger.log(
+      { userId: savedUser.id, email: savedUser.email, action: 'USER_CREATED' },
+      'User registered successfully',
+    );
+
+    return savedUser;
   }
 }
