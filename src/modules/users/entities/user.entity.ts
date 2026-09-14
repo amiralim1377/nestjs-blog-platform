@@ -34,6 +34,7 @@ export class User {
   password?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
+  @Exclude()
   googleId?: string;
 
   @Column({ type: 'text', nullable: true })
