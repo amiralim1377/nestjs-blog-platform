@@ -15,6 +15,8 @@ export interface StandardResponse<T> {
   message: string;
   timestamp: string;
   data: T | null;
+  meta?: any;
+  links?: any;
 }
 
 @Injectable()
@@ -37,6 +39,7 @@ export class DataResponseInterceptor<T> implements NestInterceptor<
         const message = data?.message || 'درخواست با موفقیت پردازش شد';
         const responseData =
           data?.data !== undefined ? data.data : data || null;
+        const isPaginated = data && data.meta && data.links;
 
         return {
           apiVersion: this.configService.get('appConfig.apiVersion') || '1.0',
@@ -45,6 +48,7 @@ export class DataResponseInterceptor<T> implements NestInterceptor<
           message,
           timestamp: new Date().toISOString(),
           data: responseData,
+          ...(isPaginated && { meta: data.meta, links: data.links }),
         };
       }),
     );
