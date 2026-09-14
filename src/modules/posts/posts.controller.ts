@@ -30,7 +30,16 @@ export class PostsController {
   @Post()
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @UseInterceptors(ClassSerializerInterceptor)
-  create(
+  @ApiOperation({ summary: 'Creates a new blog post.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The post has been successfully created.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request. Validation failed.',
+  })
+  public create(
     @Body() createPostDto: CreatePostDto,
     @ActiveUser() user: ActiveUserData,
   ) {
