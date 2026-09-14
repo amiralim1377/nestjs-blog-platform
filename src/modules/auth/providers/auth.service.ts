@@ -4,9 +4,9 @@ import { LoginProvider } from './authentication/login-provider.js';
 import { RefreshTokenDto } from '../dto/refresh-token.dto.js';
 import { RefreshTokensProvider } from './authentication/refresh-tokens.provider.js';
 import { LogoutProvider } from './authentication/logout-provider.js';
-import { AuthCreateUserDto } from '../dto/createUser.dto.js';
+import { AuthCreateUserDto } from '../dto/create-user.dto.js';
 import { RegisterProvider } from './authentication/register-provider.js';
-import { ValidateTokenAndCheckBlacklistProvider } from './authentication/validation-token-and-check-blackList.provider.js';
+import { ValidateTokenAndCheckBlacklistProvider } from './authentication/token-validation.provider.js';
 
 @Injectable()
 export class AuthService {
