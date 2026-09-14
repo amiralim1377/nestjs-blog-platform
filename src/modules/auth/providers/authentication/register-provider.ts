@@ -10,7 +10,7 @@ import {
 import { UsersService } from '../../../users/providers/users.service.js';
 import { HashingProvider } from '../hashing/hashing.provider.js';
 import { GenerateTokensProvider } from '../tokens/generate-tokens.provider.js';
-import { AuthCreateUserDto } from '../../dto/createUser.dto.js';
+import { AuthCreateUserDto } from '../../dto/create-user.dto.js';
 import type { UsersService as UsersServiceType } from '../../../users/providers/users.service.js';
 
 @Injectable()
