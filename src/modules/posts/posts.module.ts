@@ -13,6 +13,8 @@ import { FindPostBySlugProvider } from './providers/actions/find-post-by-slug.js
 import { FindPostByIdProvider } from './providers/actions/find-by-id.provider.js';
 import { FindPublishedPostProvider } from './providers/actions/find-published-posts.js';
 import { RestoreDeletedPostProvider } from './providers/actions/restore-deleted-post.js';
+import { FindDraftPostsProvider } from './providers/actions/find-draft-posts.js';
+import { FindMyDraftPostsProvider } from './providers/actions/find-my-draft-posts.provider.js';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([Post]), PaginationModule],
@@ -27,6 +29,8 @@ import { RestoreDeletedPostProvider } from './providers/actions/restore-deleted-
     FindPostByIdProvider,
     FindPublishedPostProvider,
     RestoreDeletedPostProvider,
+    FindDraftPostsProvider,
+    FindMyDraftPostsProvider,
   ],
   exports: [],
 })
