@@ -8,6 +8,7 @@ import { AuthType } from '../../enums/auth-type.enum.js';
 import { Reflector } from '@nestjs/core';
 import { AccessTokenGuard } from '../access-token/access-token.guard.js';
 import { AUTH_TYPE_KEY } from '../../constants/auth.constants.js';
+import { CookieGuard } from '../cookie/cookie.guard.js';
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -23,13 +24,14 @@ export class AuthenticationGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly accessTokenGuard: AccessTokenGuard,
+    private readonly cookieGuard: CookieGuard,
   ) {
     // Initialize the mapping between AuthTypes and their specific Guards
     this.authTypeGuardMap = {
       [AuthType.Bearer]: this.accessTokenGuard,
+      [AuthType.Cookie]: this.cookieGuard,
       [AuthType.None]: { canActivate: () => true }, // Always allow access for public routes
       [AuthType.ApiKey]: { canActivate: () => false }, // Blocked until ApiKeyGuard is implemented
-      [AuthType.Cookie]: { canActivate: () => false }, // Blocked until CookieGuard is implemented
     };
   }
 
