@@ -1,30 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from '../dto/create-post.dto.js';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Post } from '../entities/post.entity.js';
-import { Repository } from 'typeorm';
-import { UsersService } from '../../users/providers/users.service.js';
 import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
 import { CreatePostProvider } from './actions/create-post.provider.js';
 import { UpdatePostDto } from '../dto/update-post.dto.js';
 import { UpdatePostProvider } from './actions/update-post.provider.js';
 import { DeletePostProvider } from './actions/delete-post.provider.js';
-import { PaginationQueryDto } from '../../../common/pagination/dto/pagination.query.dto.js';
 import { FindAllPostsProvider } from './actions/find-all-post.provider.js';
 import { GetPostsDto } from '../dto/get-posts.dto.js';
 import { FindPostBySlugProvider } from './actions/find-post-by-slug.js';
+import { FindPostByIdProvider } from './actions/find-by-id.provider.js';
 
 @Injectable()
 export class PostsService {
   constructor(
-    @InjectRepository(Post)
-    private postRepository: Repository<Post>,
-    private usersService: UsersService,
     private readonly createPostProvider: CreatePostProvider,
     private readonly UpdatePostProvider: UpdatePostProvider,
     private readonly deletePostProvider: DeletePostProvider,
     private readonly findAllPostsProvider: FindAllPostsProvider,
     private readonly findPostBySlugProvider: FindPostBySlugProvider,
+    private readonly findPostByIdProvider: FindPostByIdProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -43,6 +37,10 @@ export class PostsService {
     return await this.deletePostProvider.delete(postId, user);
   }
 
+  async restore(postId: number, user: ActiveUserData) {
+    return await this.deletePostProvider.delete(postId, user);
+  }
+
   public async findAll(postQuery: GetPostsDto, currentUrl: string) {
     return await this.findAllPostsProvider.findAll(postQuery, currentUrl);
   }
@@ -51,14 +49,27 @@ export class PostsService {
     return await this.findPostBySlugProvider.findPostBySlug(slug);
   }
 
+  async findPublishedPosts(postId: number, user: ActiveUserData) {
+    return await this.deletePostProvider.delete(postId, user);
+  }
+
+  async findById(postId: number) {
+    return await this.findPostByIdProvider.findPostById(postId);
+  }
+
+  async findDraftPosts(postId: number, user: ActiveUserData) {
+    return await this.deletePostProvider.delete(postId, user);
+  }
+
   async findMyPosts(postId: number, user: ActiveUserData) {
     return await this.deletePostProvider.delete(postId, user);
   }
 
-  async changePostStatus(postId: number, user: ActiveUserData) {
+  async publish(postId: number, user: ActiveUserData) {
     return await this.deletePostProvider.delete(postId, user);
   }
-  async restore(postId: number, user: ActiveUserData) {
+
+  async unpublish(postId: number, user: ActiveUserData) {
     return await this.deletePostProvider.delete(postId, user);
   }
 }
