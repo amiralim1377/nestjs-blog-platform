@@ -17,7 +17,7 @@ import { RedisKeys } from '../../../redis/redis.keys.js';
 @Injectable()
 export class LoginProvider {
   private readonly MAX_FAILED_ATTEMPTS = 5;
-  private readonly LOCKOUT_DURATION_SECONDS = 15 * 60;
+  private readonly LOCKOUT_DURATION_SECONDS = 1 * 20;
   private readonly logger = new Logger(LoginProvider.name);
 
   constructor(
@@ -30,8 +30,13 @@ export class LoginProvider {
   ) {}
 
   public async login(loginDto: LoginDto) {
+    // lockout = blocking the user account
+    // lockoutKey = the Redis key for the user's lockout
     let lockoutKey: string | null = null;
+    // failedAttempts stores the number of failed login attempts.
     let failedAttempts: string | null = null;
+
+    console.log('loginDto', loginDto);
 
     // 1. Check the account lockout status
     try {
@@ -47,6 +52,8 @@ export class LoginProvider {
       );
     }
 
+    console.log('failedAttempts', failedAttempts);
+
     if (
       failedAttempts &&
       parseInt(failedAttempts, 10) >= this.MAX_FAILED_ATTEMPTS
@@ -58,6 +65,10 @@ export class LoginProvider {
 
     // 2. Retrieve the user from the database
     const user = await this.usersService.findByEmail(loginDto.email);
+
+    console.log('RAW PASSWORD:', loginDto.password);
+    console.log('HASHED PASSWORD:', user?.password);
+    console.log('user', user);
 
     // 3. Validate the password if the user and password exist
     let isPasswordValid: boolean = false;
@@ -78,9 +89,10 @@ export class LoginProvider {
       }
     }
 
+    console.log('isPasswordValid', isPasswordValid);
+
     // 4. Handle failed login attempts
     // Covers invalid email, incorrect password, and accounts without a password
-
     if (!user || !user.password || !isPasswordValid) {
       try {
         const currentAttempts = await this.redisClient.incr(lockoutKey);
