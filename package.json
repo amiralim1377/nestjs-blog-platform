@@ -20,7 +20,8 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "doc": "npx @compodoc/compodoc -p tsconfig.json -s --watch -d ./documentation --port 3001"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
@@ -53,6 +54,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@compodoc/compodoc": "^2.0.0",
     "@nestjs/cli": "^12.0.0",
     "@nestjs/mau": "^0.2.6",
     "@nestjs/schematics": "^12.0.0",
