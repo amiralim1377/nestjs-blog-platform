@@ -15,10 +15,26 @@ export class CookieProvider {
     });
   }
 
+  public setAccessTokenCookie(response: Response, accessToken: string): void {
+    response.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000,
+    });
+  }
+
   /**
    * Clears the refresh token cookie during logout.
    */
   public clearRefreshTokenCookie(response: Response): void {
     response.clearCookie('refreshToken');
+  }
+
+  /**
+   * Clears the access token cookie during logout.
+   */
+  public clearAccessTokenCookie(response: Response): void {
+    response.clearCookie('accessToken');
   }
 }
