@@ -2,13 +2,8 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
-import { HttpAdapterHost } from '@nestjs/core';
-import { SentryFilter } from './common/filters/sentry.filter.js';
 
 export function appCreate(app: INestApplication): void {
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new SentryFilter(httpAdapter));
-
   // Enable global validation pipes using class-validator
   // This validates incoming requests, strips unauthorized properties, and automatically transforms payloads to DTO classes
   app.useGlobalPipes(
