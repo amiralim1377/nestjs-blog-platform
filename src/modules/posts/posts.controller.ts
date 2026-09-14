@@ -75,8 +75,25 @@ export class PostsController {
     return this.postsService.findAll(postQuery, currentUrl);
   }
 
-  @Get(':slug')
+  @Get(':id')
   @Auth(AuthType.None)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Gets a single blog post by its numeric ID.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post retrieved successfully.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public getPostById(@Param('id', ParseIntPipe) postId: number) {
+    return this.postsService.findById(postId);
+  }
+
+  @Get('slug/:slug')
+  @Auth(AuthType.None)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Retrieves a single blog post by its slug.' })
   @ApiResponse({
     status: 200,
