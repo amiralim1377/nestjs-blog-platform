@@ -12,7 +12,7 @@ export class PaginationProvider {
     options?: FindManyOptions<T>,
   ): Promise<Paginated<T>> {
     const page = paginationQuery.page ?? 1;
-    const limit = paginationQuery.limit ?? 10;
+    const limit = paginationQuery.limit ?? 5;
 
     const results = await repository.find({
       ...options,
