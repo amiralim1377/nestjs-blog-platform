@@ -13,6 +13,7 @@ import { UpdatePostProvider } from './providers/actions/update-post.provider.js'
 import { DeletePostProvider } from './providers/actions/delete-post.provider.js';
 import { PaginationModule } from '../../common/pagination/pagination.module.js';
 import { FindAllPostsProvider } from './providers/actions/find-all-post.provider.js';
+import { FindPostBySlugProvider } from './providers/actions/find-post-by-slug.js';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([Post]), PaginationModule],
@@ -23,6 +24,7 @@ import { FindAllPostsProvider } from './providers/actions/find-all-post.provider
     UpdatePostProvider,
     DeletePostProvider,
     FindAllPostsProvider,
+    FindPostBySlugProvider,
   ],
   exports: [],
 })
