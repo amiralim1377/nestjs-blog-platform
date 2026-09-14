@@ -63,6 +63,7 @@ export class PostsController {
 
   @Get()
   @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Returns all posts with pagination and filters.' })
   @ApiResponse({
     status: 200,
@@ -72,5 +73,20 @@ export class PostsController {
     const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
 
     return this.postsService.findAll(postQuery, currentUrl);
+  }
+
+  @Get(':slug')
+  @Auth(AuthType.None)
+  @ApiOperation({ summary: 'Retrieves a single blog post by its slug.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post retrieved successfully.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public getPostBySlug(@Param('slug') slug: string) {
+    return this.postsService.findBySlug(slug);
   }
 }
