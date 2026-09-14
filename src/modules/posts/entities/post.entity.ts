@@ -11,8 +11,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PostType } from '../enums/postType.enum.js';
-import { PostStatus } from '../enums/postStatus.enum.js';
+import { PostType } from '../enums/post-type.enum.js';
+import { PostStatus } from '../enums/post-status.enum.js';
 import { User } from '../../users/entities/user.entity.js';
 import type { Relation } from 'typeorm';
 
