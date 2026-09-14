@@ -39,6 +39,7 @@ export class PostsController {
 
   @Patch(':id')
   @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Updates an existing blog post in the database.' })
   @ApiResponse({ status: 200, description: 'Post updated successfully' })
   public updatePost(
