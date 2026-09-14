@@ -29,8 +29,12 @@ export class PostsService {
     return await this.createPostProvider.create(createPostDto, user);
   }
 
-  async update(updatePostDto: UpdatePostDto, user: ActiveUserData) {
-    return await this.UpdatePostProvider.update(updatePostDto, user);
+  async update(
+    postId: number,
+    updatePostDto: UpdatePostDto,
+    user: ActiveUserData,
+  ) {
+    return await this.UpdatePostProvider.update(postId, updatePostDto, user);
   }
 
   async delete(postId: number, user: ActiveUserData) {
