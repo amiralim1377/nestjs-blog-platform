@@ -9,6 +9,8 @@ import { FindAllPostsProvider } from './actions/find-all-post.provider.js';
 import { GetPostsDto } from '../dto/get-posts.dto.js';
 import { FindPostBySlugProvider } from './actions/find-post-by-slug.js';
 import { FindPostByIdProvider } from './actions/find-by-id.provider.js';
+import { FindPublishedPostProvider } from './actions/find-published-posts.js';
+import { RestoreDeletedPostProvider } from './actions/restore-deleted-post.js';
 
 @Injectable()
 export class PostsService {
@@ -19,6 +21,8 @@ export class PostsService {
     private readonly findAllPostsProvider: FindAllPostsProvider,
     private readonly findPostBySlugProvider: FindPostBySlugProvider,
     private readonly findPostByIdProvider: FindPostByIdProvider,
+    private readonly findPublishedPostProvider: FindPublishedPostProvider,
+    private readonly restoreDeletedPostProvider: RestoreDeletedPostProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -49,12 +53,18 @@ export class PostsService {
     return await this.findPostByIdProvider.findPostById(postId);
   }
 
-  async findPublishedPosts(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
+  async findPublishedPosts(postQuery: GetPostsDto, currentUrl: string) {
+    return await this.findPublishedPostProvider.findPublishedPosts(
+      postQuery,
+      currentUrl,
+    );
   }
 
-  async restore(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
+  async restoreDeletedPost(postId: number, user: ActiveUserData) {
+    return await this.restoreDeletedPostProvider.restoreDeletedPost(
+      postId,
+      user,
+    );
   }
 
   async findDraftPosts(postId: number, user: ActiveUserData) {
