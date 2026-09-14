@@ -78,6 +78,43 @@ export class PostsController {
     return this.postsService.findPublishedPosts(postQuery, currentUrl);
   }
 
+  @Get('drafts/me')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({
+    summary:
+      'Returns the current authenticated user draft posts with pagination.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'My draft posts retrieved successfully.',
+  })
+  public getMyDraftPosts(
+    @Query() postQuery: GetPostsDto,
+    @Req() request: Request,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+    return this.postsService.findMyDraftPosts(postQuery, currentUrl, user);
+  }
+
+  @Get('drafts')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({
+    summary:
+      'Returns all draft posts with pagination for administrative review.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Draft posts retrieved successfully.',
+  })
+  public getDraftPosts(
+    @Query() postQuery: GetPostsDto,
+    @Req() request: Request,
+  ) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+    return this.postsService.findDraftPosts(postQuery, currentUrl);
+  }
+
   @Patch(':id/restore')
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({ summary: 'Restores a soft-deleted blog post.' })
