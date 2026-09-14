@@ -46,6 +46,64 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
+  @Get()
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Returns all posts with pagination and filters.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Posts were successfully retrieved.',
+  })
+  public getAllPosts(@Query() postQuery: GetPostsDto, @Req() request: Request) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+
+    return this.postsService.findAll(postQuery, currentUrl);
+  }
+
+  @Get('published')
+  @Auth(AuthType.None)
+  @ApiOperation({
+    summary: 'Returns all published posts with pagination for public feed.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Published posts were successfully retrieved.',
+  })
+  public getPublishedPosts(
+    @Query() postQuery: GetPostsDto,
+    @Req() request: Request,
+  ) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+
+    return this.postsService.findPublishedPosts(postQuery, currentUrl);
+  }
+
+  @Patch(':id/restore')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({ summary: 'Restores a soft-deleted blog post.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post was successfully restored.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request. The post is not deleted.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. You are not the author of this post.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public restorePost(
+    @Param('id', ParseIntPipe) postId: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.postsService.restoreDeletedPost(postId, user);
+  }
+
   @Patch(':id')
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -68,20 +126,6 @@ export class PostsController {
     @ActiveUser() user: ActiveUserData,
   ) {
     return this.postsService.delete(id, user);
-  }
-
-  @Get()
-  @Auth(AuthType.Bearer, AuthType.Cookie)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiOperation({ summary: 'Returns all posts with pagination and filters.' })
-  @ApiResponse({
-    status: 200,
-    description: 'Posts were successfully retrieved.',
-  })
-  public getAllPosts(@Query() postQuery: GetPostsDto, @Req() request: Request) {
-    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
-
-    return this.postsService.findAll(postQuery, currentUrl);
   }
 
   @Get(':id')
