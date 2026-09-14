@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsEnum,
   IsISO8601,
   IsJSON,
@@ -11,6 +12,7 @@ import {
 } from 'class-validator';
 import { PostType } from '../enums/postType.enum.js';
 import { PostStatus } from '../enums/postStatus.enum.js';
+import { Type } from 'class-transformer';
 
 export class CreatePostDto {
   @IsString()
@@ -48,7 +50,8 @@ export class CreatePostDto {
   @IsOptional()
   featuredImageUrl?: string;
 
-  @IsISO8601()
+  @IsDate()
+  @Type(() => Date)
   @IsOptional()
   publishOn?: Date;
 }
