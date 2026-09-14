@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   Query,
   Req,
+  ClassSerializerInterceptor,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './providers/posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
@@ -26,7 +28,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   create(
     @Body() createPostDto: CreatePostDto,
     @ActiveUser() user: ActiveUserData,
@@ -35,7 +38,7 @@ export class PostsController {
   }
 
   @Patch()
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({ summary: 'Updates an existing blog post in the database.' })
   @ApiResponse({ status: 200, description: 'Post updated successfully' })
   public updatePost(
@@ -46,7 +49,7 @@ export class PostsController {
   }
 
   @Delete(':id')
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({ summary: 'Deletes an existing blog post.' })
   @ApiResponse({ status: 200, description: 'Post deleted successfully' })
   public deletePost(
@@ -57,7 +60,7 @@ export class PostsController {
   }
 
   @Get()
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({ summary: 'Returns all posts with pagination and filters.' })
   @ApiResponse({
     status: 200,
