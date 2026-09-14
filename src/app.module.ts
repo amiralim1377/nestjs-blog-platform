@@ -8,7 +8,7 @@ import databaseConfig from './config/database.config.js';
 import { LoggerModule } from 'nestjs-pino';
 import { UsersModule } from './modules/users/users.module.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { RedisModule } from './modules/redis/redis.module.js';
@@ -17,6 +17,8 @@ import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 import { PostsModule } from './modules/posts/posts.module.js';
 import { PaginationModule } from './common/pagination/pagination.module.js';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { randomUUID } from 'crypto';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -29,6 +31,8 @@ const ENV = process.env.NODE_ENV;
     }),
     LoggerModule.forRoot({
       pinoHttp: {
+        genReqId: (req) => req.headers['x-request-id'] || randomUUID(),
+        autoLogging: true,
         transport:
           process.env.NODE_ENV !== 'production'
             ? {
@@ -103,6 +107,10 @@ const ENV = process.env.NODE_ENV;
     {
       provide: APP_INTERCEPTOR,
       useClass: DataResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })
