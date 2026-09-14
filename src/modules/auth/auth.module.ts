@@ -16,7 +16,7 @@ import { AccessTokenGuard } from './guards/access-token/access-token.guard.js';
 import { LogoutProvider } from './providers/authentication/logout-provider.js';
 import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import { RegisterProvider } from './providers/authentication/register-provider.js';
-import { ValidateTokenAndCheckBlacklistProvider } from './providers/authentication/validation-token-and-check-blackList.provider.js';
+import { ValidateTokenAndCheckBlacklistProvider } from './providers/authentication/token-validation.provider.js';
 import { CookieGuard } from './guards/cookie/cookie.guard.js';
 
 @Module({
