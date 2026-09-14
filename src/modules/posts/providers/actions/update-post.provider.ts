@@ -4,7 +4,6 @@ import {
   NotFoundException,
   RequestTimeoutException,
 } from '@nestjs/common';
-import { UsersService } from '../../../users/providers/users.service.js';
 import { Post } from '../../entities/post.entity.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,17 +13,20 @@ import { UpdatePostDto } from '../../dto/update-post.dto.js';
 @Injectable()
 export class UpdatePostProvider {
   constructor(
-    private usersService: UsersService,
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
   ) {}
 
-  async update(updatePostDto: UpdatePostDto, user: ActiveUserData) {
+  async update(
+    postId: number,
+    updatePostDto: UpdatePostDto,
+    user: ActiveUserData,
+  ) {
     let post = undefined;
 
     try {
       post = await this.postRepository.findOne({
-        where: { id: updatePostDto.id },
+        where: { id: postId },
         relations: {
           author: true,
         },
