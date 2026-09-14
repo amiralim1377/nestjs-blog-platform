@@ -78,6 +78,25 @@ export class PostsController {
     return this.postsService.findPublishedPosts(postQuery, currentUrl);
   }
 
+  @Get('me')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({
+    summary:
+      'Returns all posts belonging to the authenticated user with pagination.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'My posts retrieved successfully.',
+  })
+  public getMyPosts(
+    @Query() postQuery: GetPostsDto,
+    @Req() request: Request,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+    return this.postsService.findMyPosts(postQuery, currentUrl, user);
+  }
+
   @Get('drafts/me')
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({
