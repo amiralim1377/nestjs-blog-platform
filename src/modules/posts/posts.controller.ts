@@ -215,4 +215,50 @@ export class PostsController {
   public getPostBySlug(@Param('slug') slug: string) {
     return this.postsService.findBySlug(slug);
   }
+
+  @Patch(':id/publish')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Publishes a draft blog post.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post published successfully.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. You are not the author of this post.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public publishPost(
+    @Param('id', ParseIntPipe) postId: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.postsService.publish(postId, user);
+  }
+
+  @Patch(':id/unpublish')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Unpublishes a published blog post back to draft.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post unpublished successfully.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. You are not the author of this post.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public unpublishPost(
+    @Param('id', ParseIntPipe) postId: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.postsService.unpublish(postId, user);
+  }
 }
