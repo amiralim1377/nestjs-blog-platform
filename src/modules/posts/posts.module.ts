@@ -16,6 +16,8 @@ import { RestoreDeletedPostProvider } from './providers/actions/restore-deleted-
 import { FindDraftPostsProvider } from './providers/actions/find-draft-posts.js';
 import { FindMyDraftPostsProvider } from './providers/actions/find-my-draft-posts.provider.js';
 import { FindMyPostProvider } from './providers/actions/find-my-post.provider.js';
+import { PublishPostProvider } from './providers/actions/publish-post.provider.js';
+import { UnPublishPostProvider } from './providers/actions/unpublish.provider.js';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([Post]), PaginationModule],
@@ -33,6 +35,8 @@ import { FindMyPostProvider } from './providers/actions/find-my-post.provider.js
     FindDraftPostsProvider,
     FindMyDraftPostsProvider,
     FindMyPostProvider,
+    PublishPostProvider,
+    UnPublishPostProvider,
   ],
   exports: [],
 })
