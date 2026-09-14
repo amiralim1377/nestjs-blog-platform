@@ -33,18 +33,12 @@ export class CreatePostProvider {
     }
 
     // Create a new post entity with the authenticated user as the author
-    const post = this.postRepository.create({
+    const newPost = this.postRepository.create({
       ...createPostDto,
       author,
     });
 
     // Save the post and handle duplicate or database constraint errors
-    try {
-      return await this.postRepository.save(post);
-    } catch (error) {
-      throw new ConflictException(error, {
-        description: 'Ensure the post slug is unique and not a duplicate.',
-      });
-    }
+    return await this.postRepository.save(newPost);
   }
 }
