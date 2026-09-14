@@ -17,7 +17,7 @@ import { Auth } from './decorator/auth.decorator.js';
 import { AuthType } from './enums/auth-type.enum.js';
 import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import type { Request, Response } from 'express';
-import { AuthCreateUserDto } from './dto/createUser.dto.js';
+import { AuthCreateUserDto } from './dto/create-user.dto.js';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
