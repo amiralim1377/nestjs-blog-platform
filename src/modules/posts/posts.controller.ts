@@ -37,15 +37,16 @@ export class PostsController {
     return this.postsService.create(createPostDto, user);
   }
 
-  @Patch()
+  @Patch(':id')
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({ summary: 'Updates an existing blog post in the database.' })
   @ApiResponse({ status: 200, description: 'Post updated successfully' })
   public updatePost(
+    @Param('id', ParseIntPipe) postId: number,
     @Body() updatePostDto: UpdatePostDto,
     @ActiveUser() user: ActiveUserData,
   ) {
-    return this.postsService.update(updatePostDto, user);
+    return this.postsService.update(postId, updatePostDto, user);
   }
 
   @Delete(':id')
