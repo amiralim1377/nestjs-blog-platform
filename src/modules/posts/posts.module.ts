@@ -11,6 +11,8 @@ import { PaginationModule } from '../../common/pagination/pagination.module.js';
 import { FindAllPostsProvider } from './providers/actions/find-all-post.provider.js';
 import { FindPostBySlugProvider } from './providers/actions/find-post-by-slug.js';
 import { FindPostByIdProvider } from './providers/actions/find-by-id.provider.js';
+import { FindPublishedPostProvider } from './providers/actions/find-published-posts.js';
+import { RestoreDeletedPostProvider } from './providers/actions/restore-deleted-post.js';
 
 @Module({
   imports: [UsersModule, TypeOrmModule.forFeature([Post]), PaginationModule],
@@ -23,6 +25,8 @@ import { FindPostByIdProvider } from './providers/actions/find-by-id.provider.js
     FindAllPostsProvider,
     FindPostBySlugProvider,
     FindPostByIdProvider,
+    FindPublishedPostProvider,
+    RestoreDeletedPostProvider,
   ],
   exports: [],
 })
