@@ -14,6 +14,8 @@ import { RestoreDeletedPostProvider } from './actions/restore-deleted-post.js';
 import { FindMyDraftPostsProvider } from './actions/find-my-draft-posts.provider.js';
 import { FindDraftPostsProvider } from './actions/find-draft-posts.js';
 import { FindMyPostProvider } from './actions/find-my-post.provider.js';
+import { PublishPostProvider } from './actions/publish-post.provider.js';
+import { UnPublishPostProvider } from './actions/unpublish.provider.js';
 
 @Injectable()
 export class PostsService {
@@ -29,6 +31,8 @@ export class PostsService {
     private readonly findDraftPostsProvider: FindDraftPostsProvider,
     private readonly findMyDraftPostsProvider: FindMyDraftPostsProvider,
     private readonly findMyPostProvider: FindMyPostProvider,
+    private readonly publishPostProvider: PublishPostProvider,
+    private readonly unPublishPostProvider: UnPublishPostProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -104,10 +108,10 @@ export class PostsService {
   }
 
   async publish(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
+    return await this.publishPostProvider.publishPost(postId, user);
   }
 
   async unpublish(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
+    return await this.unPublishPostProvider.unpublishPost(postId, user);
   }
 }
