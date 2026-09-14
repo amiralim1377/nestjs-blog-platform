@@ -37,10 +37,6 @@ export class PostsService {
     return await this.deletePostProvider.delete(postId, user);
   }
 
-  async restore(postId: number, user: ActiveUserData) {
-    return await this.deletePostProvider.delete(postId, user);
-  }
-
   public async findAll(postQuery: GetPostsDto, currentUrl: string) {
     return await this.findAllPostsProvider.findAll(postQuery, currentUrl);
   }
@@ -49,12 +45,16 @@ export class PostsService {
     return await this.findPostBySlugProvider.findPostBySlug(slug);
   }
 
+  async findById(postId: number) {
+    return await this.findPostByIdProvider.findPostById(postId);
+  }
+
   async findPublishedPosts(postId: number, user: ActiveUserData) {
     return await this.deletePostProvider.delete(postId, user);
   }
 
-  async findById(postId: number) {
-    return await this.findPostByIdProvider.findPostById(postId);
+  async restore(postId: number, user: ActiveUserData) {
+    return await this.deletePostProvider.delete(postId, user);
   }
 
   async findDraftPosts(postId: number, user: ActiveUserData) {
