@@ -19,6 +19,7 @@ import { PaginationModule } from './common/pagination/pagination.module.js';
 import { SentryModule } from '@sentry/nestjs/setup';
 import { randomUUID } from 'crypto';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
+import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -111,6 +112,10 @@ const ENV = process.env.NODE_ENV;
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: TypeOrmExceptionFilter,
     },
   ],
 })
