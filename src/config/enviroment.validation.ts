@@ -16,4 +16,12 @@ export default Joi.object({
   JWT_ACCESS_TOKEN_TTL: Joi.number().required(),
   JWT_REFRESH_TOKEN_TTL: Joi.number().required(),
   REDIS_URL: Joi.string().required(),
+  MAIL_HOST: Joi.string().required(),
+  MAIL_PORT: Joi.number().default(2525),
+  MAIL_USER: Joi.string().required(),
+  MAIL_PASSWORD: Joi.string().required(),
+  MAIL_SECURE: Joi.boolean().default(false),
+  MAIL_IGNORE_TLS: Joi.boolean().default(false),
+  MAIL_DEFAULT_EMAIL: Joi.string().required(),
+  MAIL_DEFAULT_NAME: Joi.string().required(),
 });
