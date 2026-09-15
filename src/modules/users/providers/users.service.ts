@@ -8,7 +8,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity.js';
 import { Repository } from 'typeorm';
 import { CreateUserProvider } from './actions/create-user.provider.js';
-import { ExistsByEmailProvider } from './actions/exists-by-email.js';
+import { ExistsByEmailProvider } from './actions/exists-by-email.provider.js';
+import { UpdateUserDto } from '../dto/update-user.dto.js';
+import { UpdateUserProvider } from './actions/update-user.provider.js';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +18,7 @@ export class UsersService {
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly createUserProvider: CreateUserProvider,
     private readonly existsByEmailProvider: ExistsByEmailProvider,
+    private readonly updateUserProvider: UpdateUserProvider,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -58,5 +61,9 @@ export class UsersService {
   async existsByEmail(email: string): Promise<boolean> {
     const exists = await this.existsByEmailProvider.existsByEmail(email);
     return exists;
+  }
+
+  async update(userId: string, updateUserDto: UpdateUserDto) {
+    this.updateUserProvider.updateUserInfo(userId, updateUserDto);
   }
 }
