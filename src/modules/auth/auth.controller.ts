@@ -10,6 +10,8 @@ import {
   UnauthorizedException,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { AuthService } from './providers/auth.service.js';
 import { LoginDto } from './dto/login.dto.js';
@@ -19,6 +21,10 @@ import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import type { Request, Response } from 'express';
 import { AuthCreateUserDto } from './dto/create-user.dto.js';
 import { Throttle } from '@nestjs/throttler';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import type { ActiveUserData } from './interfaces/active-user-data.interface.js';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto.js';
+import { ActiveUser } from './decorator/active-user.decorator.js';
 
 @Controller('auth')
 export class AuthController {
@@ -108,5 +114,30 @@ export class AuthController {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     };
+  }
+
+  @Patch(':userId/password')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Updates a user password.' })
+  @ApiResponse({
+    status: 200,
+    description: 'User password updated successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid password.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found.',
+  })
+  public async updatePassword(
+    @Param('userId') userId: string,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.authService.updatePassword(userId, updateUserPasswordDto, user);
   }
 }
