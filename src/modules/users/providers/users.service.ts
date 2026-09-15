@@ -14,6 +14,7 @@ import { UpdateUserProvider } from './actions/update-user.provider.js';
 import { RemoveUserProvider } from './actions/remove-user.provider.js';
 import { FindAllUsersProvider } from './actions/find-all-user.js';
 import { GetUsersDto } from '../dto/get-users.dto.js';
+import { UpdatePasswordInDatabaseProvider } from './actions/update-password-in-database.provider.js';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,7 @@ export class UsersService {
     private readonly updateUserProvider: UpdateUserProvider,
     private readonly removeUserProvider: RemoveUserProvider,
     private readonly findAllUsersProvider: FindAllUsersProvider,
+    private readonly updatePasswordInDatabaseProvider: UpdatePasswordInDatabaseProvider,
   ) {}
 
   async findByEmail(email: string) {
@@ -78,5 +80,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     return this.createUserProvider.create(createUserDto);
+  }
+
+  async updatePasswordInDatabase(userId: string, hashedNewPassword: string) {
+    return this.updatePasswordInDatabaseProvider.updatePasswordInDataBase(
+      userId,
+      hashedNewPassword,
+    );
   }
 }
