@@ -7,6 +7,7 @@ import { AuthModule } from '../auth/auth.module.js';
 import { CreateUserProvider } from './providers/actions/create-user.provider.js';
 import { ExistsByEmailProvider } from './providers/actions/exists-by-email.provider.js';
 import { UpdateUserProvider } from './providers/actions/update-user.provider.js';
+import { RemoveUserProvider } from './providers/actions/remove-user.provider.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
@@ -16,6 +17,7 @@ import { UpdateUserProvider } from './providers/actions/update-user.provider.js'
     CreateUserProvider,
     ExistsByEmailProvider,
     UpdateUserProvider,
+    RemoveUserProvider,
   ],
   exports: [UsersService],
 })
