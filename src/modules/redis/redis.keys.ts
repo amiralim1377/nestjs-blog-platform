@@ -13,4 +13,9 @@ export const RedisKeys = {
    * @example 'reset_password_token:a1b2c3d4e5...'
    */
   resetPasswordToken: (token: string) => `reset_password_token:${token}`,
+
+  /**
+   * @example 'revoked_family:9a59670a-cbf0-420e-a7ad-deba3fcb1589'
+   */
+  revokeTokenFamily: (familyId: string) => `revoked_family:${familyId}`,
 };
