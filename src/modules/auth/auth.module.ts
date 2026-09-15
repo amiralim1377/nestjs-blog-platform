@@ -21,12 +21,14 @@ import { CookieGuard } from './guards/cookie/cookie.guard.js';
 import { UpdateUserPasswordProvider } from './providers/authentication/update-user-password.provider.js';
 import { ResetPasswordProvider } from './providers/authentication/reset-password.provider.js';
 import { ForgotPasswordProvider } from './providers/authentication/forgot-password.provider.js';
+import { MailModule } from '../mail/mail.module.js';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     ConfigModule.forFeature(jwtConfig),
     JwtModule.registerAsync(jwtConfig.asProvider()),
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [
