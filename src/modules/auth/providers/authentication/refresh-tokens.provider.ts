@@ -64,10 +64,7 @@ export class RefreshTokensProvider {
     const actualFamilyId = familyId || sub.toString();
     const blacklistKey = RedisKeys.blacklistToken(jti);
 
-    const familyRevocationKey =
-      'revokeTokenFamily' in RedisKeys
-        ? (RedisKeys as any).revokeTokenFamily(actualFamilyId)
-        : `revoked_family:${actualFamilyId}`;
+    const familyRevocationKey = RedisKeys.revokeTokenFamily(actualFamilyId);
 
     let isFamilyRevoked: string | null = null;
     try {
