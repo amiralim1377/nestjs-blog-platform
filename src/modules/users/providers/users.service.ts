@@ -8,12 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity.js';
 import { Repository } from 'typeorm';
 import { CreateUserProvider } from './actions/create-user.provider.js';
+import { ExistsByEmailProvider } from './actions/exists-by-email.js';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private readonly createUserProvider: CreateUserProvider,
+    private readonly existsByEmailProvider: ExistsByEmailProvider,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -51,5 +53,10 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async existsByEmail(email: string): Promise<boolean> {
+    const exists = await this.existsByEmailProvider.existsByEmail(email);
+    return exists;
   }
 }
