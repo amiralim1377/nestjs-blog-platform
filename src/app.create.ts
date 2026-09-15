@@ -2,8 +2,15 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
+import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter.js';
 
 export function appCreate(app: INestApplication): void {
+  app.useGlobalFilters(
+    new GlobalExceptionFilter(),
+    new TypeOrmExceptionFilter(),
+  );
+
   // Enable global validation pipes using class-validator
   // This validates incoming requests, strips unauthorized properties, and automatically transforms payloads to DTO classes
   app.useGlobalPipes(
