@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { CreateUserProvider } from './providers/actions/create-user.provider.js';
+import { ExistsByEmailProvider } from './providers/actions/exists-by-email.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
   controllers: [UsersController],
-  providers: [UsersService, CreateUserProvider],
+  providers: [UsersService, CreateUserProvider, ExistsByEmailProvider],
   exports: [UsersService],
 })
 export class UsersModule {}
