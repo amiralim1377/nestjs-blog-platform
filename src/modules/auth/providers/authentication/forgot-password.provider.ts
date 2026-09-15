@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UsersService } from '../../../users/providers/users.service.js';
 import { Redis } from 'ioredis';
 import { ForgotPasswordDto } from '../../dto/forgot-password.dto.js';
@@ -8,6 +8,8 @@ import { MailService } from '../../../mail/providers/mail.service.js';
 
 @Injectable()
 export class ForgotPasswordProvider {
+  private readonly logger = new Logger(ForgotPasswordProvider.name);
+
   constructor(
     private readonly usersService: UsersService,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
@@ -23,13 +25,24 @@ export class ForgotPasswordProvider {
 
       await this.redisClient.set(redisKey, user.id, 'EX', 900);
 
-      const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+      const clientUrl =
+        process.env.CLIENT_URL ||
+        process.env.APP_URL ||
+        'http://localhost:3000';
+      const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
-      this.mailService.sendResetPasswordMail({
-        to: user.email,
-        name: user.firstName,
-        resetLink: resetLink,
-      });
+      try {
+        await this.mailService.sendResetPasswordMail({
+          to: user.email,
+          name: user.firstName,
+          resetLink: resetLink,
+        });
+      } catch (error) {
+        this.logger.error(
+          `Failed to send reset password email to: ${user.email}`,
+          error,
+        );
+      }
     }
 
     return {
