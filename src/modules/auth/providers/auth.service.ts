@@ -7,6 +7,9 @@ import { LogoutProvider } from './authentication/logout-provider.js';
 import { AuthCreateUserDto } from '../dto/create-user.dto.js';
 import { RegisterProvider } from './authentication/register-provider.js';
 import { ValidateTokenAndCheckBlacklistProvider } from './authentication/token-validation.provider.js';
+import { UpdateUserPasswordProvider } from './authentication/update-user-password.provider.js';
+import { UpdateUserPasswordDto } from '../dto/update-user-password.dto.js';
+import { ActiveUserData } from '../interfaces/active-user-data.interface.js';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +19,7 @@ export class AuthService {
     private readonly logoutProvider: LogoutProvider,
     private readonly registerProvider: RegisterProvider,
     private readonly validateTokenAndCheckBlacklistProvider: ValidateTokenAndCheckBlacklistProvider,
+    private readonly updateUserPasswordProvider: UpdateUserPasswordProvider,
   ) {}
 
   async register(createUserDto: AuthCreateUserDto) {
@@ -24,6 +28,18 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     return await this.loginProvider.login(loginDto);
+  }
+
+  async updatePassword(
+    userId: string,
+    updateUserPasswordDto: UpdateUserPasswordDto,
+    user: ActiveUserData,
+  ) {
+    return this.updateUserPasswordProvider.updateUserPassword(
+      userId,
+      updateUserPasswordDto,
+      user,
+    );
   }
 
   public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
