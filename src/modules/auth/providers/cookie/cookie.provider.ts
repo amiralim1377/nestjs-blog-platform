@@ -28,13 +28,23 @@ export class CookieProvider {
    * Clears the refresh token cookie during logout.
    */
   public clearRefreshTokenCookie(response: Response): void {
-    response.clearCookie('refreshToken');
+    response.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
   }
 
   /**
    * Clears the access token cookie during logout.
    */
   public clearAccessTokenCookie(response: Response): void {
-    response.clearCookie('accessToken');
+    response.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
   }
 }
