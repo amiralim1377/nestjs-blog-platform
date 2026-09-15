@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from '../../dto/create-post.dto.js';
 import { UsersService } from '../../../users/providers/users.service.js';
 import { Post } from '../../entities/post.entity.js';
@@ -25,7 +21,7 @@ export class CreatePostProvider {
     try {
       author = await this.usersService.findById(user.sub);
     } catch (error) {
-      throw new ConflictException(error);
+      throw new NotFoundException(error);
     }
 
     if (!author) {
