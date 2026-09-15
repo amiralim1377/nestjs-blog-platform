@@ -28,7 +28,16 @@ export class ResetPasswordProvider {
 
     await this.usersService.updatePasswordInDatabase(userId, hashedNewPassword);
 
+    // Invalidate the used reset token
     await this.redisClient.del(redisKey);
+
+    // Invalidate active session families for this user to prevent ongoing compromised sessions
+    await this.redisClient.set(
+      RedisKeys.revokeTokenFamily(userId),
+      'true',
+      'EX',
+      7 * 24 * 60 * 60,
+    );
 
     return {
       message: 'Password has been successfully reset. You can now login.',
