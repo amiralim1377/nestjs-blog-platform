@@ -15,6 +15,9 @@ export class UpdateUserProvider {
     userId: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
+    console.log('DTO:', updateUserDto);
+    console.log('PASSWORD:', updateUserDto.password);
+
     if (updateUserDto.password) {
       throw new BadRequestException('This route is not for updating password');
     }
