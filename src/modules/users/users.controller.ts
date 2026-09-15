@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   Delete,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UsersService } from './providers/users.service.js';
@@ -35,6 +36,9 @@ export class UsersController {
     description: 'The user already exists or invalid user information.',
   })
   public async create(@Body() createUserDto: CreateUserDto) {
+    throw new ServiceUnavailableException(
+      'User registration is temporarily disabled',
+    );
     return this.usersService.create(createUserDto);
   }
 
