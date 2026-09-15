@@ -17,24 +17,24 @@ export class ForgotPasswordProvider {
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
     const user = await this.usersService.findByEmail(forgotPasswordDto.email);
 
-    if (!user) {
-      throw new NotFoundException('User with this email does not exist');
+    if (user) {
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const redisKey = RedisKeys.resetPasswordToken(resetToken);
+
+      await this.redisClient.set(redisKey, user.id, 'EX', 900);
+
+      const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
+
+      this.mailService.sendResetPasswordMail({
+        to: user.email,
+        name: user.firstName,
+        resetLink: resetLink,
+      });
     }
 
-    const resetToken = crypto.randomBytes(32).toString('hex');
-    const redisKey = RedisKeys.resetPasswordToken(resetToken);
-
-    await this.redisClient.set(redisKey, user.id, 'EX', 900);
-
-    const resetLink = `http://localhost:3000/reset-password?token=${resetToken}`;
-    this.mailService.sendResetPasswordMail(
-      user.email,
-      resetLink,
-      user.firstName,
-    );
-
     return {
-      message: 'Password reset link has been sent to your email.',
+      message:
+        'If that email address is in our database, we will send you an email to reset your password.',
     };
   }
 }
