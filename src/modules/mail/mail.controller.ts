@@ -28,7 +28,11 @@ export class MailController {
     const dummyToken = 'test-token-12345';
     const resetLink = `http://localhost:3000/reset-password?token=${dummyToken}`;
 
-    await this.mailService.sendResetPasswordMail(email, resetLink, name);
+    await this.mailService.sendResetPasswordMail({
+      to: email,
+      name: name,
+      resetLink: resetLink,
+    });
     return { message: 'Reset password email sent successfully to Mailtrap!' };
   }
 }
