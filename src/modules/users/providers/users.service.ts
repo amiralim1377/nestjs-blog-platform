@@ -12,6 +12,8 @@ import { ExistsByEmailProvider } from './actions/exists-by-email.provider.js';
 import { UpdateUserDto } from '../dto/update-user.dto.js';
 import { UpdateUserProvider } from './actions/update-user.provider.js';
 import { RemoveUserProvider } from './actions/remove-user.provider.js';
+import { FindAllUsersProvider } from './actions/find-all-user.js';
+import { GetUsersDto } from '../dto/get-users.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -21,10 +23,15 @@ export class UsersService {
     private readonly existsByEmailProvider: ExistsByEmailProvider,
     private readonly updateUserProvider: UpdateUserProvider,
     private readonly removeUserProvider: RemoveUserProvider,
+    private readonly findAllUsersProvider: FindAllUsersProvider,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     return this.createUserProvider.create(createUserDto);
+  }
+
+  async findAllUser(postQuery: GetUsersDto, currentUrl: string) {
+    return await this.findAllUsersProvider.findAll(postQuery, currentUrl);
   }
 
   async findByEmail(email: string) {
