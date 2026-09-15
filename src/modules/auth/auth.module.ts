@@ -19,6 +19,8 @@ import { RegisterProvider } from './providers/authentication/register-provider.j
 import { ValidateTokenAndCheckBlacklistProvider } from './providers/authentication/token-validation.provider.js';
 import { CookieGuard } from './guards/cookie/cookie.guard.js';
 import { UpdateUserPasswordProvider } from './providers/authentication/update-user-password.provider.js';
+import { ResetPasswordProvider } from './providers/authentication/reset-password.provider.js';
+import { ForgotPasswordProvider } from './providers/authentication/forgot-password.provider.js';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { UpdateUserPasswordProvider } from './providers/authentication/update-us
     CookieGuard,
     ValidateTokenAndCheckBlacklistProvider,
     UpdateUserPasswordProvider,
+    ResetPasswordProvider,
+    ForgotPasswordProvider,
     {
       provide: HashingProvider,
       useClass: ArgonProvider,
