@@ -48,17 +48,19 @@ export class GenerateTokensProvider {
         this.jwtConfiguration.secret,
         {
           email: user.email,
+          role: user.role,
           familyId: currentFamilyId,
         },
       ),
 
       // Generate the Refresh Token
-      this.signToken<{ familyId: string }>(
+      this.signToken<{ familyId: string; role?: string }>(
         user.id,
         this.jwtConfiguration.refreshTokenTtl,
         this.jwtConfiguration.refreshTokenSecret,
         {
           familyId: currentFamilyId,
+          role: user.role,
         },
       ),
     ]);
