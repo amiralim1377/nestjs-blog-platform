@@ -1,42 +1,34 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { MailService } from './mail.service.js';
-import { CreateMailDto } from './dto/create-mail.dto.js';
-import { UpdateMailDto } from './dto/update-mail.dto.js';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { MailService } from './providers/mail.service.js';
+import { AuthType } from '../auth/enums/auth-type.enum.js';
+import { Auth } from '../auth/decorator/auth.decorator.js';
 
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
-  @Post()
-  create(@Body() createMailDto: CreateMailDto) {
-    return this.mailService.create(createMailDto);
+  @Post('test-welcome')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.None)
+  public async testWelcomeMail(
+    @Body('email') email: string,
+    @Body('name') name: string,
+  ) {
+    await this.mailService.sendWelcomeMail(email, name);
+    return { message: 'Welcome email sent successfully to Mailtrap!' };
   }
 
-  @Get()
-  findAll() {
-    return this.mailService.findAll();
-  }
+  @Post('test-reset-password')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.None)
+  public async testResetPasswordMail(
+    @Body('email') email: string,
+    @Body('name') name: string,
+  ) {
+    const dummyToken = 'test-token-12345';
+    const resetLink = `http://localhost:3000/reset-password?token=${dummyToken}`;
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mailService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMailDto: UpdateMailDto) {
-    return this.mailService.update(+id, updateMailDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mailService.remove(+id);
+    await this.mailService.sendResetPasswordMail(email, resetLink, name);
+    return { message: 'Reset password email sent successfully to Mailtrap!' };
   }
 }
