@@ -20,11 +20,21 @@ export class TypeOrmExceptionFilter implements ExceptionFilter {
 
     const errObj = exception as any;
     const errorCode = errObj.code || errObj.driverError?.code;
+    const message = errObj.message || errObj.driverError?.message || '';
 
-    if (errorCode === PostgresErrorCode.UNIQUE_VIOLATION) {
-      const detail = errObj.detail || errObj.driverError?.detail || '';
-      const match = detail.match(/Key \((.*?)\)=/);
-      const duplicateField = match && match[1] ? match[1] : 'unknown';
+    const isUniqueViolation =
+      errorCode === PostgresErrorCode.UNIQUE_VIOLATION ||
+      errorCode === 'ER_DUP_ENTRY' ||
+      errorCode === 'SQLITE_CONSTRAINT' ||
+      errorCode === 'SQLITE_CONSTRAINT_UNIQUE' ||
+      message.includes('UNIQUE constraint failed');
+
+    if (isUniqueViolation) {
+      const detail = errObj.detail || errObj.driverError?.detail || message;
+      const match =
+        detail.match(/Key \((.*?)\)=/) ||
+        detail.match(/UNIQUE constraint failed: (?:.*\.)?(.*)/);
+      const duplicateField = match && match[1] ? match[1].trim() : 'field';
       const faFieldName = DbFieldTranslations[duplicateField] || duplicateField;
 
       return response.status(HttpStatus.CONFLICT).json({
