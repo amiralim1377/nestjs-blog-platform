@@ -25,6 +25,8 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import type { ActiveUserData } from './interfaces/active-user-data.interface.js';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto.js';
 import { ActiveUser } from './decorator/active-user.decorator.js';
+import { ResetPasswordDto } from './dto/reset-password.dto.js';
+import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
 
 @Controller('auth')
 export class AuthController {
@@ -116,6 +118,20 @@ export class AuthController {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     };
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.None)
+  public async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @Auth(AuthType.None)
+  public async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 
   @Patch(':userId/password')
