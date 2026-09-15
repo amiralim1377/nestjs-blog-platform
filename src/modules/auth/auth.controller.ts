@@ -77,11 +77,13 @@ export class AuthController {
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async logout(
-    @Headers('authorization') authHeader: string,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
+    @Headers('authorization') authHeader?: string,
   ) {
-    const accessToken = authHeader.split(' ')[1];
+    const accessToken = authHeader
+      ? authHeader.split(' ')[1]
+      : request.cookies?.['accessToken'];
     const refreshToken = request.cookies?.['refreshToken'];
 
     const result = await this.authService.logout(accessToken, refreshToken);
