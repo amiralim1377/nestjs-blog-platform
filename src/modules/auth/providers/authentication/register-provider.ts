@@ -29,7 +29,7 @@ export class RegisterProvider {
 
     try {
       // Check if user with email exists
-      existingUser = await this.usersService.findByEmail(createUserDto.email);
+      existingUser = await this.usersService.existsByEmail(createUserDto.email);
     } catch (error) {
       this.logger.error(
         {
