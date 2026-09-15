@@ -21,6 +21,7 @@ import { randomUUID } from 'crypto';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter.js';
 import { MailModule } from './modules/mail/mail.module.js';
+import { UploadsModule } from './modules/uploads/uploads.module.js';
 import mailConfig from './modules/mail/config/mail.config.js';
 
 const ENV = process.env.NODE_ENV;
@@ -104,6 +105,7 @@ const ENV = process.env.NODE_ENV;
     PostsModule,
     PaginationModule,
     MailModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [
