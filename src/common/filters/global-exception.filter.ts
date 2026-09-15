@@ -18,32 +18,52 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request & { user?: any }>();
 
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    // ۲. پردازش خطاهای بحرانی (۵۰۰ به بالا)
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      this.captureSentryException(exception, request);
+      this.logSystemError(exception, request);
+    }
+
     if (exception instanceof HttpException) {
-      const status = exception.getStatus();
       return response.status(status).json(exception.getResponse());
     }
 
-    const stack = exception instanceof Error ? exception.stack : undefined;
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      message: 'Service is temporarily unavailable, please try again later.',
+      timestamp: new Date().toISOString(),
+      path: request.url,
+    });
+  }
 
-    this.logger.error(
-      {
-        err: exception,
-        path: request.url,
-        method: request.method,
-      },
-      'Critical System Error',
-      stack,
-    );
-
+  private captureSentryException(
+    exception: unknown,
+    request: Request & { user?: any },
+  ): void {
     Sentry.withScope((scope) => {
-      const sanitizedBody = { ...request.body };
-      if (sanitizedBody && sanitizedBody.password) {
-        sanitizedBody.password = '*** [REDACTED] ***';
+      const sanitizedBody = request.body ? { ...request.body } : {};
+
+      const sensitiveFields = [
+        'password',
+        'passwordConfirm',
+        'token',
+        'refreshToken',
+      ];
+      for (const field of sensitiveFields) {
+        if (sanitizedBody[field]) {
+          sanitizedBody[field] = '*** [REDACTED] ***';
+        }
       }
 
       scope.setExtra('body', sanitizedBody);
       scope.setExtra('query', request.query);
       scope.setExtra('params', request.params);
+      scope.setExtra('ip', request.ip);
 
       if (request.user) {
         scope.setUser({ id: request.user.sub, email: request.user.email });
@@ -51,10 +71,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
       Sentry.captureException(exception);
     });
-    response.status(HttpStatus.SERVICE_UNAVAILABLE).json({
-      statusCode: HttpStatus.SERVICE_UNAVAILABLE,
-      message: 'Service is temporarily unavailable, please try again later.',
-      timestamp: new Date().toISOString(),
-    });
+  }
+
+  private logSystemError(exception: unknown, request: Request): void {
+    const stack = exception instanceof Error ? exception.stack : undefined;
+
+    this.logger.error(
+      {
+        err: exception,
+        path: request.url,
+        method: request.method,
+        ip: request.ip,
+      },
+      'Critical System Error',
+      stack,
+    );
   }
 }
