@@ -18,6 +18,7 @@ import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import { RegisterProvider } from './providers/authentication/register-provider.js';
 import { ValidateTokenAndCheckBlacklistProvider } from './providers/authentication/token-validation.provider.js';
 import { CookieGuard } from './guards/cookie/cookie.guard.js';
+import { UpdateUserPasswordProvider } from './providers/authentication/update-user-password.provider.js';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CookieGuard } from './guards/cookie/cookie.guard.js';
     CookieProvider,
     CookieGuard,
     ValidateTokenAndCheckBlacklistProvider,
+    UpdateUserPasswordProvider,
     {
       provide: HashingProvider,
       useClass: ArgonProvider,
