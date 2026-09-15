@@ -10,6 +10,7 @@ import { UpdateUserProvider } from './providers/actions/update-user.provider.js'
 import { RemoveUserProvider } from './providers/actions/remove-user.provider.js';
 import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
+import { UpdatePasswordInDatabaseProvider } from './providers/actions/update-password-in-database.provider.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
@@ -22,6 +23,7 @@ import { PaginationProvider } from '../../common/pagination/providers/pagination
     RemoveUserProvider,
     FindAllUsersProvider,
     PaginationProvider,
+    UpdatePasswordInDatabaseProvider,
   ],
   exports: [UsersService],
 })
