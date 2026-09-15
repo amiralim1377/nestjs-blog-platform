@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SendResetPasswordMailProvider } from './actions/send-reset-password-mail.provider.js';
 import { SendWelcomeMailProvider } from './actions/send-welcome-mail.provider.js';
+import { SendResetPasswordDto } from '../dto/send-reset-password.dto.js';
 
 @Injectable()
 export class MailService {
@@ -10,11 +11,9 @@ export class MailService {
   ) {}
 
   public async sendResetPasswordMail(
-    email: string,
-    resetLink: string,
-    userName: string,
+    sendResetPasswordDto: SendResetPasswordDto,
   ) {
-    this.sendResetPasswordMailProvider.sendMail(email, resetLink, userName);
+    this.sendResetPasswordMailProvider.sendMail(sendResetPasswordDto);
   }
 
   public async sendWelcomeMail(email: string, userName: string) {
