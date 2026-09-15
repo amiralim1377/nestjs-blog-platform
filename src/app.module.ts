@@ -20,6 +20,7 @@ import { SentryModule } from '@sentry/nestjs/setup';
 import { randomUUID } from 'crypto';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter.js';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter.js';
+import { MailModule } from './modules/mail/mail.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -101,6 +102,7 @@ const ENV = process.env.NODE_ENV;
     RedisModule,
     PostsModule,
     PaginationModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [
