@@ -41,7 +41,7 @@ export class AuthService {
     updateUserPasswordDto: UpdateUserPasswordDto,
     user: ActiveUserData,
   ) {
-    return this.updateUserPasswordProvider.updateUserPassword(
+    return await this.updateUserPasswordProvider.updateUserPassword(
       userId,
       updateUserPasswordDto,
       user,
@@ -57,16 +57,16 @@ export class AuthService {
   }
 
   async validateTokenAndCheckBlacklist(token: string) {
-    return this.validateTokenAndCheckBlacklistProvider.validateTokenAndCheckBlacklist(
+    return await this.validateTokenAndCheckBlacklistProvider.validateTokenAndCheckBlacklist(
       token,
     );
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    this.resetPasswordProvider.resetPassword(resetPasswordDto);
+    return await this.resetPasswordProvider.resetPassword(resetPasswordDto);
   }
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
-    this.forgotPasswordProvider.forgotPassword(forgotPasswordDto);
+    return await this.forgotPasswordProvider.forgotPassword(forgotPasswordDto);
   }
 }
