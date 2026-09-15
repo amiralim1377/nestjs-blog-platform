@@ -1,6 +1,6 @@
 import {
-  BadRequestException,
   Injectable,
+  NotFoundException,
   RequestTimeoutException,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto.js';
@@ -11,6 +11,7 @@ import { CreateUserProvider } from './actions/create-user.provider.js';
 import { ExistsByEmailProvider } from './actions/exists-by-email.provider.js';
 import { UpdateUserDto } from '../dto/update-user.dto.js';
 import { UpdateUserProvider } from './actions/update-user.provider.js';
+import { RemoveUserProvider } from './actions/remove-user.provider.js';
 
 @Injectable()
 export class UsersService {
@@ -19,6 +20,7 @@ export class UsersService {
     private readonly createUserProvider: CreateUserProvider,
     private readonly existsByEmailProvider: ExistsByEmailProvider,
     private readonly updateUserProvider: UpdateUserProvider,
+    private readonly removeUserProvider: RemoveUserProvider,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -52,7 +54,7 @@ export class UsersService {
     }
 
     if (!user) {
-      throw new BadRequestException('The user id does not exist');
+      throw new NotFoundException('The user id does not exist');
     }
 
     return user;
@@ -64,6 +66,10 @@ export class UsersService {
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
-    this.updateUserProvider.updateUserInfo(userId, updateUserDto);
+    return this.updateUserProvider.updateUserInfo(userId, updateUserDto);
+  }
+
+  async remove(userId: string) {
+    return this.removeUserProvider.removeUser(userId);
   }
 }
