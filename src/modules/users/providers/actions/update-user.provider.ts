@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { UpdateUserDto } from '../../dto/update-user.dto.js';
 import { User } from '../../entities/user.entity.js';
 import { Repository } from 'typeorm';
@@ -15,9 +20,6 @@ export class UpdateUserProvider {
     userId: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    console.log('DTO:', updateUserDto);
-    console.log('PASSWORD:', updateUserDto.password);
-
     if (updateUserDto.password) {
       throw new BadRequestException('This route is not for updating password');
     }
@@ -31,6 +33,13 @@ export class UpdateUserProvider {
       throw new BadRequestException('User not found');
     }
 
-    return this.usersRepository.save(user);
+    try {
+      return await this.usersRepository.save(user);
+    } catch (error: any) {
+      if (error?.code === '23505' || error?.message?.includes('UNIQUE')) {
+        throw new ConflictException('A user with this email already exists');
+      }
+      throw new InternalServerErrorException('Error updating user information');
+    }
   }
 }
