@@ -2,7 +2,7 @@ import { registerAs } from '@nestjs/config';
 
 export default registerAs('mail', () => ({
   host: process.env.MAIL_HOST,
-  port: parseInt(process.env.MAIL_PORT, 10) || 587,
+  port: parseInt(process.env.MAIL_PORT || '587', 10),
   ignoreTLS: process.env.MAIL_IGNORE_TLS === 'true',
   secure: process.env.MAIL_SECURE === 'true',
   user: process.env.MAIL_USER,
