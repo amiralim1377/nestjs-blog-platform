@@ -6,8 +6,12 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-// @ts-expect-error: EjsAdapter lacks proper ESM type declarations in the current version
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter.js';
+import { SendWelcomeMailProvider } from './providers/actions/send-welcome-mail.provider.js';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const {
+  EjsAdapter,
+} = require('@nestjs-modules/mailer/dist/adapters/ejs.adapter');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,6 +48,12 @@ const __dirname = dirname(__filename);
     }),
   ],
   controllers: [MailController],
-  providers: [MailService, SendResetPasswordMailProvider],
+  providers: [
+    MailService,
+    SendResetPasswordMailProvider,
+    SendWelcomeMailProvider,
+  ],
+
+  exports: [MailService],
 })
 export class MailModule {}
