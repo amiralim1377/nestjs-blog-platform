@@ -26,14 +26,6 @@ export class UsersService {
     private readonly findAllUsersProvider: FindAllUsersProvider,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    return this.createUserProvider.create(createUserDto);
-  }
-
-  async findAllUser(postQuery: GetUsersDto, currentUrl: string) {
-    return await this.findAllUsersProvider.findAll(postQuery, currentUrl);
-  }
-
   async findByEmail(email: string) {
     const user = await this.usersRepository.findOne({
       where: { email: email },
@@ -67,6 +59,10 @@ export class UsersService {
     return user;
   }
 
+  async findAllUser(postQuery: GetUsersDto, currentUrl: string) {
+    return await this.findAllUsersProvider.findAll(postQuery, currentUrl);
+  }
+
   async existsByEmail(email: string): Promise<boolean> {
     const exists = await this.existsByEmailProvider.existsByEmail(email);
     return exists;
@@ -78,5 +74,9 @@ export class UsersService {
 
   async remove(userId: string) {
     return this.removeUserProvider.removeUser(userId);
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    return this.createUserProvider.create(createUserDto);
   }
 }
