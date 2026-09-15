@@ -9,6 +9,7 @@ import { ExistsByEmailProvider } from './providers/actions/exists-by-email.provi
 import { UpdateUserProvider } from './providers/actions/update-user.provider.js';
 import { RemoveUserProvider } from './providers/actions/remove-user.provider.js';
 import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
+import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
@@ -20,6 +21,7 @@ import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
     UpdateUserProvider,
     RemoveUserProvider,
     FindAllUsersProvider,
+    PaginationProvider,
   ],
   exports: [UsersService],
 })
