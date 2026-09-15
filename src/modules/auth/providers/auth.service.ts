@@ -10,6 +10,10 @@ import { ValidateTokenAndCheckBlacklistProvider } from './authentication/token-v
 import { UpdateUserPasswordProvider } from './authentication/update-user-password.provider.js';
 import { UpdateUserPasswordDto } from '../dto/update-user-password.dto.js';
 import { ActiveUserData } from '../interfaces/active-user-data.interface.js';
+import { ResetPasswordProvider } from './authentication/reset-password.provider.js';
+import { ForgotPasswordProvider } from './authentication/forgot-password.provider.js';
+import { ResetPasswordDto } from '../dto/reset-password.dto.js';
+import { ForgotPasswordDto } from '../dto/forgot-password.dto.js';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +24,8 @@ export class AuthService {
     private readonly registerProvider: RegisterProvider,
     private readonly validateTokenAndCheckBlacklistProvider: ValidateTokenAndCheckBlacklistProvider,
     private readonly updateUserPasswordProvider: UpdateUserPasswordProvider,
+    private readonly resetPasswordProvider: ResetPasswordProvider,
+    private readonly forgotPasswordProvider: ForgotPasswordProvider,
   ) {}
 
   async register(createUserDto: AuthCreateUserDto) {
@@ -54,5 +60,13 @@ export class AuthService {
     return this.validateTokenAndCheckBlacklistProvider.validateTokenAndCheckBlacklist(
       token,
     );
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    this.resetPasswordProvider.resetPassword(resetPasswordDto);
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+    this.forgotPasswordProvider.forgotPassword(forgotPasswordDto);
   }
 }
