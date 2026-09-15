@@ -17,7 +17,7 @@ import { RedisKeys } from '../../../redis/redis.keys.js';
 @Injectable()
 export class LoginProvider {
   private readonly MAX_FAILED_ATTEMPTS = 5;
-  private readonly LOCKOUT_DURATION_SECONDS = 1 * 20;
+  private readonly LOCKOUT_DURATION_SECONDS = 15 * 60;
   private readonly logger = new Logger(LoginProvider.name);
 
   constructor(
@@ -36,8 +36,6 @@ export class LoginProvider {
     // failedAttempts stores the number of failed login attempts.
     let failedAttempts: string | null = null;
 
-    console.log('loginDto', loginDto);
-
     // 1. Check the account lockout status
     try {
       lockoutKey = RedisKeys.getAccountLockoutKey(loginDto.email);
@@ -52,8 +50,6 @@ export class LoginProvider {
       );
     }
 
-    console.log('failedAttempts', failedAttempts);
-
     if (
       failedAttempts &&
       parseInt(failedAttempts, 10) >= this.MAX_FAILED_ATTEMPTS
@@ -65,10 +61,6 @@ export class LoginProvider {
 
     // 2. Retrieve the user from the database
     const user = await this.usersService.findByEmail(loginDto.email);
-
-    console.log('RAW PASSWORD:', loginDto.password);
-    console.log('HASHED PASSWORD:', user?.password);
-    console.log('user', user);
 
     // 3. Validate the password if the user and password exist
     let isPasswordValid: boolean = false;
@@ -88,8 +80,6 @@ export class LoginProvider {
         });
       }
     }
-
-    console.log('isPasswordValid', isPasswordValid);
 
     // 4. Handle failed login attempts
     // Covers invalid email, incorrect password, and accounts without a password
@@ -111,6 +101,8 @@ export class LoginProvider {
           `Redis Error (INCR) for account lockout: ${loginDto.email}`,
           error,
         );
+
+        throw new UnauthorizedException('Invalid email or password.');
       }
 
       // Return a specific message for users who registered with Google
@@ -119,7 +111,6 @@ export class LoginProvider {
           'Please sign in using your Google account',
         );
       }
-
       // Return a generic error message for invalid credentials
       throw new UnauthorizedException('email or password is wrong');
     }
