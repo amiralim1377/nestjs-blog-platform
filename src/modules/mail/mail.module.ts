@@ -8,13 +8,20 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { SendWelcomeMailProvider } from './providers/actions/send-welcome-mail.provider.js';
 import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const {
-  EjsAdapter,
-} = require('@nestjs-modules/mailer/dist/adapters/ejs.adapter');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const require = createRequire(import.meta.url);
+
+const mailerMainPath = require.resolve('@nestjs-modules/mailer');
+const ejsAdapterPath = join(
+  dirname(mailerMainPath),
+  'adapters',
+  'ejs.adapter.js',
+);
+
+const { EjsAdapter } = require(ejsAdapterPath);
 
 @Module({
   imports: [
