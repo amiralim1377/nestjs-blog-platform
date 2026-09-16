@@ -23,7 +23,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    // ۲. پردازش خطاهای بحرانی (۵۰۰ به بالا)
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.captureSentryException(exception, request);
       this.logSystemError(exception, request);
