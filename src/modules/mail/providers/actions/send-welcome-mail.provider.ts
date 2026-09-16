@@ -4,8 +4,6 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
-import { UserCreatedEvent } from '../../../users/events/user-created.event.js';
 
 @Injectable()
 export class SendWelcomeMailProvider {
@@ -13,25 +11,21 @@ export class SendWelcomeMailProvider {
 
   constructor(private readonly mailerService: MailerService) {}
 
-  @OnEvent(UserCreatedEvent.EVENT_NAME, { async: true })
-  public async sendMail(event: UserCreatedEvent): Promise<boolean> {
+  public async sendMail(email: string, userName: string): Promise<boolean> {
     try {
       await this.mailerService.sendMail({
-        to: event.email,
+        to: email,
         subject: 'Welcome to Our Application! 🎉',
         template: './welcome',
         context: {
-          name: event.firstName,
+          name: userName,
         },
       });
-      this.logger.log(`Welcome email successfully sent to ${event.email}`);
+      this.logger.log(`Welcome email successfully sent to ${email}`);
       return true;
     } catch (error) {
       const stack = error instanceof Error ? error.stack : String(error);
-      this.logger.error(
-        `Failed to send welcome email to ${event.email}`,
-        stack,
-      );
+      this.logger.error(`Failed to send welcome email to ${email}`, stack);
       throw new InternalServerErrorException('Error sending welcome email');
     }
   }
