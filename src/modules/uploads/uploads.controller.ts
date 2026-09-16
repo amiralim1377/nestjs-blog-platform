@@ -1,6 +1,8 @@
 import {
   Controller,
   Post,
+  Delete,
+  Param,
   UploadedFile,
   UseInterceptors,
   Body,
@@ -8,13 +10,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { UploadsService } from './providers/uploads.service.js';
-
 import { FileValidationPipe } from './pipes/file-validation.pipe.js';
 import { FileSignaturePipe } from './pipes/file-signature.pipe.js';
 import { CreateUploadDto } from './dto/create-upload.dto.js';
-import { UPLOAD_FOLDERS } from './constants/upload.constants.js';
-import { ActiveUser } from '../auth/decorator/active-user.decorator.js';
+import { UPLOAD_FOLDERS, UPLOAD_LIMITS } from './constants/upload.constants.js';
 import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface.js';
+import { ActiveUser } from '../auth/decorator/active-user.decorator.js';
 
 @ApiTags('Uploads')
 @Controller('uploads')
@@ -39,7 +40,11 @@ export class UploadsController {
       required: ['file'],
     },
   })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: UPLOAD_LIMITS.MAX_FILE_SIZE_BYTES },
+    }),
+  )
   public async uploadFile(
     @UploadedFile(FileValidationPipe, FileSignaturePipe)
     file: Express.Multer.File,
@@ -51,5 +56,14 @@ export class UploadsController {
       user,
       createUploadDto.folder || UPLOAD_FOLDERS.POSTS,
     );
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a file securely' })
+  public async deleteFile(
+    @Param('id') id: string,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.uploadsService.deleteFile(id, user);
   }
 }
