@@ -4,6 +4,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { StorageService } from '../interfaces/storage-service.interface.js';
 import type { FileMetadata } from '../interfaces/file-metadata.interface.js';
 import { StorageProviders } from '../enums/storage-providers.enum.js';
@@ -15,11 +16,15 @@ import { SUPABASE_CLIENT } from '../../supabase/supabase.provider.js';
 @Injectable()
 export class SupabaseStorageService implements StorageService {
   private readonly logger = new Logger(SupabaseStorageService.name);
-  private readonly bucket = 'blog-assets';
+  private readonly bucket: string;
 
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.bucket =
+      this.configService.get<string>('upload.supabaseBucket') || 'blog-assets';
+  }
 
   public async uploadFile(
     file: Express.Multer.File,
@@ -36,9 +41,13 @@ export class SupabaseStorageService implements StorageService {
       });
 
     if (error) {
-      this.logger.error(`Supabase upload failed: ${error.message}`, error);
+      this.logger.error(
+        { err: error, fileName: file.originalname },
+        'Supabase upload failed',
+      );
       throw new InternalServerErrorException(
         'Failed to upload file to storage.',
+        { cause: error },
       );
     }
 
@@ -63,7 +72,8 @@ export class SupabaseStorageService implements StorageService {
 
     if (error) {
       this.logger.error(
-        `Failed to delete file from Supabase: ${error.message}`,
+        { err: error, path: filePath },
+        'Failed to delete file from Supabase',
       );
       return false;
     }
