@@ -11,6 +11,7 @@ import {
   Req,
   ClassSerializerInterceptor,
   UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PostsService } from './providers/posts.service.js';
 import { CreatePostDto } from './dto/create-post.dto.js';
@@ -19,9 +20,18 @@ import { ActiveUser } from '../auth/decorator/active-user.decorator.js';
 import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface.js';
 import { Auth } from '../auth/decorator/auth.decorator.js';
 import { AuthType } from '../auth/enums/auth-type.enum.js';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import type { Request } from 'express';
 import { GetPostsDto } from './dto/get-posts.dto.js';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UPLOAD_LIMITS } from '../uploads/constants/upload.constants.js';
+import { FileValidationPipe } from '../uploads/pipes/file-validation.pipe.js';
+import { FileSignaturePipe } from '../uploads/pipes/file-signature.pipe.js';
 
 @Controller('posts')
 export class PostsController {
@@ -132,6 +142,42 @@ export class PostsController {
   ) {
     const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
     return this.postsService.findDraftPosts(postQuery, currentUrl);
+  }
+
+  @Post(':id/cover')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({ summary: 'Upload or update the cover image of a post' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: UPLOAD_LIMITS.MAX_FILE_SIZE_BYTES },
+    }),
+  )
+  public async uploadCover(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile(FileValidationPipe, FileSignaturePipe)
+    file: Express.Multer.File,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.postsService.uploadPostCover(id, file, user);
+  }
+
+  @Delete(':id/cover')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({ summary: 'Delete the cover image of a post' })
+  public async deleteCover(
+    @Param('id', ParseIntPipe) postId: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.postsService.deletePostCover(postId, user);
   }
 
   @Patch(':id/restore')
