@@ -8,7 +8,7 @@ import { CreateUserProvider } from './providers/actions/create-user.provider.js'
 import { ExistsByEmailProvider } from './providers/actions/exists-by-email.provider.js';
 import { UpdateUserProvider } from './providers/actions/update-user.provider.js';
 import { RemoveUserProvider } from './providers/actions/remove-user.provider.js';
-import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
+import { FindAllUsersProvider } from './providers/actions/find-all-user.provider.js';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 import { UpdatePasswordInDatabaseProvider } from './providers/actions/update-password-in-database.provider.js';
 import { UploadsModule } from '../uploads/uploads.module.js';
