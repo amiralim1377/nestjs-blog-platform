@@ -15,7 +15,7 @@ import { RemoveUserProvider } from './actions/remove-user.provider.js';
 import { FindAllUsersProvider } from './actions/find-all-user.js';
 import { GetUsersDto } from '../dto/get-users.dto.js';
 import { UpdatePasswordInDatabaseProvider } from './actions/update-password-in-database.provider.js';
-import { UploadAvatarProvider } from './actions/upload-user-avatar.js';
+import { UploadAvatarProvider } from './actions/upload-user-avatar.provider.js';
 import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
 
 @Injectable()
