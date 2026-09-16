@@ -6,8 +6,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { SendWelcomeMailProvider } from './providers/actions/send-welcome-mail.provider.js';
 import { createRequire } from 'module';
+import { SendWelcomeMailProvider } from './providers/actions/send-welcome-mail.provider.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
