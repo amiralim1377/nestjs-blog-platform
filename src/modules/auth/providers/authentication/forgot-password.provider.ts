@@ -1,10 +1,11 @@
-import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../../../users/providers/users.service.js';
 import { Redis } from 'ioredis';
 import { ForgotPasswordDto } from '../../dto/forgot-password.dto.js';
 import * as crypto from 'crypto';
 import { RedisKeys } from '../../../redis/redis.keys.js';
-import { MailService } from '../../../mail/providers/mail.service.js';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ForgotPasswordEvent } from '../../events/forgot-passwprd.event.js';
 
 @Injectable()
 export class ForgotPasswordProvider {
@@ -13,7 +14,7 @@ export class ForgotPasswordProvider {
   constructor(
     private readonly usersService: UsersService,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
-    private readonly mailService: MailService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
@@ -32,11 +33,10 @@ export class ForgotPasswordProvider {
       const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
       try {
-        await this.mailService.sendResetPasswordMail({
-          to: user.email,
-          name: user.firstName,
-          resetLink: resetLink,
-        });
+        this.eventEmitter.emit(
+          ForgotPasswordEvent.EVENT_NAME,
+          new ForgotPasswordEvent(user.email, user.firstName, resetLink),
+        );
       } catch (error) {
         this.logger.error(
           `Failed to send reset password email to: ${user.email}`,
