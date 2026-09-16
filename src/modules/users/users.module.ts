@@ -12,9 +12,14 @@ import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 import { UpdatePasswordInDatabaseProvider } from './providers/actions/update-password-in-database.provider.js';
 import { UploadsModule } from '../uploads/uploads.module.js';
+import { UploadAvatarProvider } from './providers/actions/upload-user-avatar.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    forwardRef(() => AuthModule),
+    UploadsModule,
+  ],
   controllers: [UsersController],
   providers: [
     UsersService,
@@ -25,7 +30,8 @@ import { UploadsModule } from '../uploads/uploads.module.js';
     FindAllUsersProvider,
     PaginationProvider,
     UpdatePasswordInDatabaseProvider,
-    UploadsModule,
+
+    UploadAvatarProvider,
   ],
   exports: [UsersService],
 })
