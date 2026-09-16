@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { createRequire } from 'module';
 import { SendWelcomeMailProvider } from './providers/actions/send-welcome-mail.provider.js';
+import { BullModule } from '@nestjs/bullmq';
+import { MailProcessor } from './processors/mail.processor.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -53,14 +55,18 @@ const { EjsAdapter } = require(ejsAdapterPath);
         },
       }),
     }),
+    BullModule.registerQueue({
+      name: 'mail-queue',
+    }),
   ],
   controllers: [MailController],
   providers: [
     MailService,
     SendResetPasswordMailProvider,
     SendWelcomeMailProvider,
+    MailProcessor,
   ],
 
-  exports: [MailService],
+  exports: [MailService, BullModule],
 })
 export class MailModule {}
