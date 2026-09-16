@@ -25,6 +25,7 @@ import { UploadsModule } from './modules/uploads/uploads.module.js';
 import mailConfig from './modules/mail/config/mail.config.js';
 import { SupabaseModule } from './modules/supabase/supabase.module.js';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { BullModule } from '@nestjs/bullmq';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -104,6 +105,18 @@ const ENV = process.env.NODE_ENV;
     EventEmitterModule.forRoot({
       wildcard: true,
       delimiter: '.',
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          url: configService.get<string>('REDIS_URL'),
+          tls: configService.get<string>('REDIS_URL')?.startsWith('rediss')
+            ? { rejectUnauthorized: false }
+            : undefined,
+        },
+      }),
     }),
     UsersModule,
     AuthModule,
