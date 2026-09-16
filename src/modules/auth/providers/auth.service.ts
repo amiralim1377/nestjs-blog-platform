@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { LoginDto } from '../dto/login.dto.js';
-import { LoginProvider } from './authentication/login-provider.js';
+import { LoginProvider } from './authentication/login.provider.js';
 import { RefreshTokenDto } from '../dto/refresh-token.dto.js';
 import { RefreshTokensProvider } from './authentication/refresh-tokens.provider.js';
 import { LogoutProvider } from './authentication/logout-provider.js';
