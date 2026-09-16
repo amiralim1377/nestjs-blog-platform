@@ -40,6 +40,9 @@ export class User {
   @Column({ type: 'text', nullable: true })
   avatar?: string;
 
+  @Column({ nullable: true })
+  avatarId?: string;
+
   @Column({ type: 'text', nullable: true })
   bio?: string;
 

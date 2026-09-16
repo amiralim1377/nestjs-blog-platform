@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUploadDto } from '../dto/create-upload.dto.js';
-import { UpdateUploadDto } from '../dto/update-upload.dto.js';
+import { UploadFileProvider } from './actions/upload-file.provider.js';
+import { DeleteFileProvider } from './actions/delete-file.provider.js';
+import type { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
+import { Upload } from '../entities/upload.entity.js';
 
 @Injectable()
 export class UploadsService {
-  create(createUploadDto: CreateUploadDto) {
-    return 'This action adds a new upload';
+  constructor(
+    private readonly uploadFileProvider: UploadFileProvider,
+    private readonly deleteFileProvider: DeleteFileProvider,
+  ) {}
+
+  public async uploadFile(
+    file: Express.Multer.File,
+    user: ActiveUserData,
+    folder?: string,
+  ): Promise<Upload> {
+    return this.uploadFileProvider.execute(file, user, folder);
   }
 
-  findAll() {
-    return `This action returns all uploads`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} upload`;
-  }
-
-  update(id: number, updateUploadDto: UpdateUploadDto) {
-    return `This action updates a #${id} upload`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} upload`;
+  public async deleteFile(
+    id: string,
+    user: ActiveUserData,
+  ): Promise<{ message: string; id: string }> {
+    return this.deleteFileProvider.execute(id, user);
   }
 }

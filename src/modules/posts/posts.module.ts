@@ -18,9 +18,16 @@ import { FindMyDraftPostsProvider } from './providers/actions/find-my-draft-post
 import { FindMyPostProvider } from './providers/actions/find-my-post.provider.js';
 import { PublishPostProvider } from './providers/actions/publish-post.provider.js';
 import { UnPublishPostProvider } from './providers/actions/unpublish.provider.js';
+import { UploadPostCoverProvider } from './providers/actions/upload-post-cover.provider.js';
+import { UploadsModule } from '../uploads/uploads.module.js';
 
 @Module({
-  imports: [UsersModule, TypeOrmModule.forFeature([Post]), PaginationModule],
+  imports: [
+    UsersModule,
+    TypeOrmModule.forFeature([Post]),
+    PaginationModule,
+    UploadsModule,
+  ],
   controllers: [PostsController],
   providers: [
     PostsService,
@@ -37,6 +44,7 @@ import { UnPublishPostProvider } from './providers/actions/unpublish.provider.js
     FindMyPostProvider,
     PublishPostProvider,
     UnPublishPostProvider,
+    UploadPostCoverProvider,
   ],
   exports: [],
 })

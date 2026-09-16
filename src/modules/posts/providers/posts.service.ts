@@ -16,6 +16,7 @@ import { FindDraftPostsProvider } from './actions/find-draft-posts.js';
 import { FindMyPostProvider } from './actions/find-my-post.provider.js';
 import { PublishPostProvider } from './actions/publish-post.provider.js';
 import { UnPublishPostProvider } from './actions/unpublish.provider.js';
+import { UploadPostCoverProvider } from './actions/upload-post-cover.provider.js';
 
 @Injectable()
 export class PostsService {
@@ -33,6 +34,7 @@ export class PostsService {
     private readonly findMyPostProvider: FindMyPostProvider,
     private readonly publishPostProvider: PublishPostProvider,
     private readonly unPublishPostProvider: UnPublishPostProvider,
+    private readonly uploadPostCoverProvider: UploadPostCoverProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
@@ -113,5 +115,24 @@ export class PostsService {
 
   async unpublish(postId: number, user: ActiveUserData) {
     return await this.unPublishPostProvider.unpublishPost(postId, user);
+  }
+
+  async uploadPostCover(
+    postId: number,
+    file: Express.Multer.File,
+    activeUser: ActiveUserData,
+  ) {
+    return await this.uploadPostCoverProvider.uploadPostCover(
+      postId,
+      file,
+      activeUser,
+    );
+  }
+
+  async deletePostCover(postId: number, activeUser: ActiveUserData) {
+    return await this.uploadPostCoverProvider.deletePostCover(
+      postId,
+      activeUser,
+    );
   }
 }

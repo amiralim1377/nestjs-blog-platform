@@ -52,7 +52,10 @@ export class Post {
   schema?: string;
 
   @Column({ type: 'varchar', length: 1024, nullable: true })
-  featuredImageUrl?: string;
+  coverImage?: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  coverImageId?: string;
 
   @Index()
   @Column({

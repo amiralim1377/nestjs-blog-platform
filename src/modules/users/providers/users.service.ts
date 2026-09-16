@@ -15,6 +15,8 @@ import { RemoveUserProvider } from './actions/remove-user.provider.js';
 import { FindAllUsersProvider } from './actions/find-all-user.js';
 import { GetUsersDto } from '../dto/get-users.dto.js';
 import { UpdatePasswordInDatabaseProvider } from './actions/update-password-in-database.provider.js';
+import { UploadAvatarProvider } from './actions/upload-user-avatar.js';
+import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +28,7 @@ export class UsersService {
     private readonly removeUserProvider: RemoveUserProvider,
     private readonly findAllUsersProvider: FindAllUsersProvider,
     private readonly updatePasswordInDatabaseProvider: UpdatePasswordInDatabaseProvider,
+    private readonly uploadAvatarProvider: UploadAvatarProvider,
   ) {}
 
   async findByEmail(email: string) {
@@ -87,5 +90,9 @@ export class UsersService {
       userId,
       hashedNewPassword,
     );
+  }
+
+  async uploadAvatar(file: Express.Multer.File, activeUser: ActiveUserData) {
+    return this.uploadAvatarProvider.uploadAvatar(file, activeUser);
   }
 }

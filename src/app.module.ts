@@ -23,6 +23,7 @@ import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filte
 import { MailModule } from './modules/mail/mail.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
 import mailConfig from './modules/mail/config/mail.config.js';
+import { SupabaseModule } from './modules/supabase/supabase.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -106,6 +107,7 @@ const ENV = process.env.NODE_ENV;
     PaginationModule,
     MailModule,
     UploadsModule,
+    SupabaseModule,
   ],
   controllers: [AppController],
   providers: [
