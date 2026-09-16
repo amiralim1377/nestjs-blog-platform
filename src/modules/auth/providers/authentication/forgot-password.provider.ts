@@ -4,8 +4,8 @@ import { Redis } from 'ioredis';
 import { ForgotPasswordDto } from '../../dto/forgot-password.dto.js';
 import * as crypto from 'crypto';
 import { RedisKeys } from '../../../redis/redis.keys.js';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { ForgotPasswordEvent } from '../../events/forgot-passwprd.event.js';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class ForgotPasswordProvider {
@@ -14,7 +14,7 @@ export class ForgotPasswordProvider {
   constructor(
     private readonly usersService: UsersService,
     @Inject('REDIS_CLIENT') private readonly redisClient: Redis,
-    private readonly eventEmitter: EventEmitter2,
+    @InjectQueue('mail-queue') private readonly mailQueue: Queue,
   ) {}
 
   async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
@@ -33,9 +33,26 @@ export class ForgotPasswordProvider {
       const resetLink = `${clientUrl}/reset-password?token=${resetToken}`;
 
       try {
-        this.eventEmitter.emit(
-          ForgotPasswordEvent.EVENT_NAME,
-          new ForgotPasswordEvent(user.email, user.firstName, resetLink),
+        // this.eventEmitter.emit(
+        //   ForgotPasswordEvent.EVENT_NAME,
+        //   new ForgotPasswordEvent(user.email, user.firstName, resetLink),
+        // );
+
+        await this.mailQueue.add(
+          'send-reset-password',
+          {
+            email: user.email,
+            firstName: user.firstName,
+            resetLink,
+          },
+          {
+            attempts: 3,
+            backoff: {
+              type: 'exponential',
+              delay: 5000,
+            },
+            removeOnComplete: true,
+          },
         );
       } catch (error) {
         this.logger.error(
