@@ -6,16 +6,17 @@ import {
 import { MailerService } from '@nestjs-modules/mailer';
 import { ResetPasswordTemplateContext } from '../../interfaces/mail-template.interface.js';
 import { SendResetPasswordDto } from '../../dto/send-reset-password.dto.js';
+import { ForgotPasswordEvent } from '../../../auth/events/forgot-passwprd.event.js';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class SendResetPasswordMailProvider {
   private readonly logger = new Logger(SendResetPasswordMailProvider.name);
   constructor(private readonly mailerService: MailerService) {}
 
-  public async sendMail(
-    sendResetPasswordDto: SendResetPasswordDto,
-  ): Promise<boolean> {
-    const { to, name, resetLink } = sendResetPasswordDto;
+  @OnEvent(ForgotPasswordEvent.EVENT_NAME, { async: true })
+  public async sendMail(event: ForgotPasswordEvent): Promise<boolean> {
+    const { email: to, firstName: name, resetLink } = event;
 
     try {
       await this.mailerService.sendMail({
