@@ -2,6 +2,7 @@ export const STORAGE_SERVICE = 'STORAGE_SERVICE';
 
 export const UPLOAD_FOLDERS = {
   AVATARS: 'avatars',
+  COVERS: 'covers',
   POSTS: 'posts',
   GENERAL: 'general',
 } as const;
