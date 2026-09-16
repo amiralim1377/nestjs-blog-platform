@@ -20,7 +20,7 @@ export class MailController {
     @Body('email') email: string,
     @Body('name') name: string,
   ) {
-    await this.mailService.sendWelcomeMail(email, name);
+    // await this.mailService.sendWelcomeMail(email, name);
     return { message: 'Welcome email sent successfully!' };
   }
 
