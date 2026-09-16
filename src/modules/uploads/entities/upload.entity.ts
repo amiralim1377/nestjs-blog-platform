@@ -25,6 +25,9 @@ export class Upload {
   @Column({ type: 'int' })
   size: number;
 
+  @Column({ nullable: true })
+  provider?: string;
+
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   user?: User;
 
