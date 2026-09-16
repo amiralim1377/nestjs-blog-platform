@@ -14,13 +14,18 @@ import { FileMetadata } from '../../interfaces/file-metadata.interface.js';
 @Injectable()
 export class LocalStorageService implements StorageService {
   private readonly logger = new Logger(LocalStorageService.name);
-  private readonly uploadsRoot = path.resolve(process.cwd(), 'uploads');
+  private readonly uploadsRoot: string;
   private readonly appUrl: string;
 
   constructor(private readonly configService: ConfigService) {
     this.appUrl =
       this.configService.get<string>('appConfig.appUrl') ||
       'http://localhost:3000';
+
+    this.uploadsRoot = path.resolve(
+      process.cwd(),
+      this.configService.get<string>('upload.localDestination') || 'uploads',
+    );
   }
 
   public async uploadFile(
@@ -39,7 +44,7 @@ export class LocalStorageService implements StorageService {
       await fs.writeFile(destinationPath, file.buffer);
 
       const relativeStoragePath = path.posix.join(
-        'uploads',
+        this.configService.get<string>('upload.localDestination') || 'uploads',
         folder,
         uniqueFileName,
       );
@@ -55,11 +60,13 @@ export class LocalStorageService implements StorageService {
       };
     } catch (error: any) {
       this.logger.error(
-        `Local file upload failed: ${error.message}`,
-        error.stack,
+        { err: error, fileName: file.originalname },
+        'Local file upload failed',
       );
+
       throw new InternalServerErrorException(
         'Failed to save file to local storage.',
+        { cause: error },
       );
     }
   }
@@ -67,11 +74,21 @@ export class LocalStorageService implements StorageService {
   public async deleteFile(filePath: string): Promise<boolean> {
     try {
       const fullSystemPath = path.resolve(process.cwd(), filePath);
+
+      if (!fullSystemPath.startsWith(this.uploadsRoot)) {
+        this.logger.warn(
+          { filePath },
+          'SECURITY ALERT: Attempted path traversal detected!',
+        );
+        return false;
+      }
+
       await fs.unlink(fullSystemPath);
       return true;
     } catch (error: any) {
       this.logger.error(
-        `Failed to delete local file at "${filePath}": ${error.message}`,
+        { err: error, filePath },
+        'Failed to delete local file',
       );
       return false;
     }
