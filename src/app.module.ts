@@ -26,6 +26,7 @@ import mailConfig from './modules/mail/config/mail.config.js';
 import { SupabaseModule } from './modules/supabase/supabase.module.js';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
+import { TagsModule } from './tags/tags.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -126,6 +127,7 @@ const ENV = process.env.NODE_ENV;
     MailModule,
     UploadsModule,
     SupabaseModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [
