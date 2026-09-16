@@ -1,33 +1,28 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Upload } from '../entities/upload.entity.js';
-import { STORAGE_SERVICE } from '../constants/upload.constants.js';
-import type { StorageService } from '../interfaces/storage-service.interface.js';
+import { Injectable } from '@nestjs/common';
+import { UploadFileProvider } from './actions/upload-file.provider.js';
+import { DeleteFileProvider } from './actions/delete-file.provider.js';
 import type { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
-import { User } from '../../users/entities/user.entity.js';
+import { Upload } from '../entities/upload.entity.js';
 
 @Injectable()
 export class UploadsService {
   constructor(
-    @Inject(STORAGE_SERVICE)
-    private readonly storageService: StorageService,
-    @InjectRepository(Upload)
-    private readonly uploadsRepository: Repository<Upload>,
+    private readonly uploadFileProvider: UploadFileProvider,
+    private readonly deleteFileProvider: DeleteFileProvider,
   ) {}
 
   public async uploadFile(
     file: Express.Multer.File,
     user: ActiveUserData,
-    folder: string = 'posts',
-  ) {
-    const metadata = await this.storageService.uploadFile(file, folder);
+    folder?: string,
+  ): Promise<Upload> {
+    return this.uploadFileProvider.execute(file, user, folder);
+  }
 
-    const uploadRecord = this.uploadsRepository.create({
-      ...metadata,
-      user: { id: user.sub } as User,
-    });
-
-    return await this.uploadsRepository.save(uploadRecord);
+  public async deleteFile(
+    id: string,
+    user: ActiveUserData,
+  ): Promise<{ message: string; id: string }> {
+    return this.deleteFileProvider.execute(id, user);
   }
 }
