@@ -86,7 +86,7 @@ export class RegisterProvider {
     const tokens = await this.generateTokensProvider.generateTokens(newUser);
 
     this.eventEmitter.emit(
-      UserCreatedEvent.name,
+      UserCreatedEvent.EVENT_NAME,
       new UserCreatedEvent(newUser.email, newUser.firstName),
     );
 
