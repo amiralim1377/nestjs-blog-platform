@@ -13,15 +13,27 @@ import {
   Get,
   Query,
   Req,
+  UploadedFile,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UsersService } from './providers/users.service.js';
 import { AuthType } from '../auth/enums/auth-type.enum.js';
 import { Auth } from '../auth/decorator/auth.decorator.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { GetUsersDto } from './dto/get-users.dto.js';
 import type { Request } from 'express';
+import { ActiveUser } from '../auth/decorator/active-user.decorator.js';
+import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface.js';
+import { FileValidationPipe } from '../uploads/pipes/file-validation.pipe.js';
+import { FileSignaturePipe } from '../uploads/pipes/file-signature.pipe.js';
+import { UPLOAD_LIMITS } from '../uploads/constants/upload.constants.js';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UsersController {
@@ -48,6 +60,31 @@ export class UsersController {
       getUsersDto,
       `${request.protocol}://${request.get('host')}${request.originalUrl}`,
     );
+  }
+
+  @Post('avatar')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({ summary: 'Upload or update user profile picture' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: UPLOAD_LIMITS.MAX_FILE_SIZE_BYTES },
+    }),
+  )
+  public async uploadAvatar(
+    @UploadedFile(FileValidationPipe, FileSignaturePipe)
+    file: Express.Multer.File,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.usersService.uploadAvatar(file, user);
   }
 
   @Patch(':userId')
@@ -94,7 +131,7 @@ export class UsersController {
   @HttpCode(HttpStatus.CREATED)
   @Auth(AuthType.None)
   @UseInterceptors(ClassSerializerInterceptor)
-  @ApiOperation({ summary: 'Creates a new user account.' })
+  @ApiOperation({ summary: 'Creates a new user account.-disabled' })
   @ApiResponse({
     status: 201,
     description: 'User created successfully.',
@@ -107,6 +144,6 @@ export class UsersController {
     throw new ServiceUnavailableException(
       'User registration is temporarily disabled',
     );
-    return this.usersService.create(createUserDto);
+    // return this.usersService.create(createUserDto);
   }
 }
