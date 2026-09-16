@@ -12,7 +12,7 @@ import { ExistsByEmailProvider } from './actions/exists-by-email.provider.js';
 import { UpdateUserDto } from '../dto/update-user.dto.js';
 import { UpdateUserProvider } from './actions/update-user.provider.js';
 import { RemoveUserProvider } from './actions/remove-user.provider.js';
-import { FindAllUsersProvider } from './actions/find-all-user.js';
+import { FindAllUsersProvider } from './actions/find-all-user.provider.js';
 import { GetUsersDto } from '../dto/get-users.dto.js';
 import { UpdatePasswordInDatabaseProvider } from './actions/update-password-in-database.provider.js';
 import { UploadAvatarProvider } from './actions/upload-user-avatar.provider.js';
