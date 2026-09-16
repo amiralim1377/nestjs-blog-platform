@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import {
   UPLOAD_FOLDERS,
@@ -6,13 +6,6 @@ import {
 } from '../constants/upload.constants.js';
 
 export class CreateUploadDto {
-  @ApiProperty({
-    type: 'string',
-    format: 'binary',
-    description: 'Binary file payload (JPG, PNG, WEBP images up to 3MB)',
-  })
-  file: any;
-
   @ApiPropertyOptional({
     description: 'Target destination folder in storage bucket',
     enum: Object.values(UPLOAD_FOLDERS),
