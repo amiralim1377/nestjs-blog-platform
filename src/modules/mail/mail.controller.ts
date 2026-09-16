@@ -42,11 +42,6 @@ export class MailController {
       process.env.CLIENT_URL || process.env.APP_URL || 'http://localhost:3000';
     const resetLink = `${clientUrl}/reset-password?token=${dummyToken}`;
 
-    await this.mailService.sendResetPasswordMail({
-      to: email,
-      name: name,
-      resetLink: resetLink,
-    });
     return { message: 'Reset password email sent successfully!' };
   }
 }
