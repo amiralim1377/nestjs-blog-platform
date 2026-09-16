@@ -18,4 +18,16 @@ export const RedisKeys = {
    * @example 'revoked_family:9a59670a-cbf0-420e-a7ad-deba3fcb1589'
    */
   revokeTokenFamily: (familyId: string) => `revoked_family:${familyId}`,
+
+  /**
+   * Grace period cache storing the already rotated token pair for concurrent requests
+   * @example 'rotated_token:9a59670a-cbf0-420e-a7ad-deba3fcb1589'
+   */
+  rotatedToken: (jti: string) => `rotated_token:${jti}`,
+
+  /**
+   * Distributed lock key during in-flight rotation
+   * @example 'lock:rotation:9a59670a-cbf0-420e-a7ad-deba3fcb1589'
+   */
+  tokenRotationLock: (jti: string) => `lock:rotation:${jti}`,
 };
