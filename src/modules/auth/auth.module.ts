@@ -8,7 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import jwtConfig from './config/jwt.config.js';
 import { ArgonProvider } from './providers/hashing/argon.provider.js';
 import { RefreshTokensProvider } from './providers/authentication/refresh-tokens.provider.js';
-import { LoginProvider } from './providers/authentication/login-provider.js';
+import { LoginProvider } from './providers/authentication/login.provider.js';
 import { GenerateTokensProvider } from './providers/tokens/generate-tokens.provider.js';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthenticationGuard } from './guards/authentication/authentication.guard.js';
