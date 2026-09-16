@@ -1,26 +1,35 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUploadDto } from '../dto/create-upload.dto.js';
-import { UpdateUploadDto } from '../dto/update-upload.dto.js';
+import { Inject, Injectable } from '@nestjs/common';
+import { Upload } from '../entities/upload.entity.js';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import type { StorageService } from '../interfaces/storage-service.interface.js';
+import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface.js';
+import { STORAGE_SERVICE } from '../constants/upload.constants.js';
 
 @Injectable()
 export class UploadsService {
-  create(createUploadDto: CreateUploadDto) {
-    return 'This action adds a new upload';
-  }
+  constructor(
+    @Inject(STORAGE_SERVICE)
+    private readonly storageService: StorageService,
+    @InjectRepository(Upload)
+    private readonly uploadsRepository: Repository<Upload>,
+  ) {}
 
-  findAll() {
-    return `This action returns all uploads`;
-  }
+  public async uploadFile(
+    file: Express.Multer.File,
+    user: ActiveUserData,
+    folder: string = 'posts',
+  ) {
+    const { path, url } = await this.storageService.uploadFile(file, folder);
 
-  findOne(id: number) {
-    return `This action returns a #${id} upload`;
-  }
+    const uploadRecord = this.uploadsRepository.create({
+      url,
+      path,
+      mimeType: file.mimetype,
+      size: file.size,
+      user: { id: user.sub } as any,
+    });
 
-  update(id: number, updateUploadDto: UpdateUploadDto) {
-    return `This action updates a #${id} upload`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} upload`;
+    return await this.uploadsRepository.save(uploadRecord);
   }
 }
