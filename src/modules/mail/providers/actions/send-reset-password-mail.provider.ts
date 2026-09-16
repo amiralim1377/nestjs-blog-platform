@@ -31,6 +31,8 @@ export class SendResetPasswordMailProvider {
       this.logger.log(`Reset password email successfully sent to ${to}`);
       return true;
     } catch (error) {
+      const stack = error instanceof Error ? error.stack : String(error);
+      this.logger.error(`Failed to send reset password email to ${to}`, stack);
       throw new InternalServerErrorException('Error sending email');
     }
   }
