@@ -7,9 +7,9 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { UploadsService } from './uploads.service.js';
 import { CreateUploadDto } from './dto/create-upload.dto.js';
 import { UpdateUploadDto } from './dto/update-upload.dto.js';
+import { UploadsService } from './providers/uploads.service.js';
 
 @Controller('uploads')
 export class UploadsController {

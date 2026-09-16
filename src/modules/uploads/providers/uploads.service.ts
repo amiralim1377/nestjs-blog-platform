@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUploadDto } from './dto/create-upload.dto.js';
-import { UpdateUploadDto } from './dto/update-upload.dto.js';
+import { CreateUploadDto } from '../dto/create-upload.dto.js';
+import { UpdateUploadDto } from '../dto/update-upload.dto.js';
 
 @Injectable()
 export class UploadsService {
