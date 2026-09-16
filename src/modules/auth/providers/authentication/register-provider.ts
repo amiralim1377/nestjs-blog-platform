@@ -7,13 +7,13 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UsersService } from '../../../users/providers/users.service.js';
 import { HashingProvider } from '../hashing/hashing.provider.js';
 import { GenerateTokensProvider } from '../tokens/generate-tokens.provider.js';
 import { AuthCreateUserDto } from '../../dto/create-user.dto.js';
 import type { UsersService as UsersServiceType } from '../../../users/providers/users.service.js';
-import { UserCreatedEvent } from '../../../users/events/user-created.event.js';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class RegisterProvider {
@@ -24,7 +24,7 @@ export class RegisterProvider {
     private readonly usersService: UsersServiceType,
     private readonly hashingProvider: HashingProvider,
     private readonly generateTokensProvider: GenerateTokensProvider,
-    private readonly eventEmitter: EventEmitter2,
+    @InjectQueue('mail-queue') private readonly mailQueue: Queue,
   ) {}
 
   async register(createUserDto: AuthCreateUserDto) {
@@ -85,9 +85,25 @@ export class RegisterProvider {
     // Now 'newUser' is properly resolved before passing to generateTokens
     const tokens = await this.generateTokensProvider.generateTokens(newUser);
 
-    this.eventEmitter.emit(
-      UserCreatedEvent.EVENT_NAME,
-      new UserCreatedEvent(newUser.email, newUser.firstName),
+    // this.eventEmitter.emit(
+    //   UserCreatedEvent.EVENT_NAME,
+    //   new UserCreatedEvent(newUser.email, newUser.firstName),
+    // );
+
+    await this.mailQueue.add(
+      'send-welcome',
+      {
+        email: newUser.email,
+        firstName: newUser.firstName,
+      },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 5000,
+        },
+        removeOnComplete: true,
+      },
     );
 
     return {
