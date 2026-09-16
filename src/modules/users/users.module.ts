@@ -12,7 +12,7 @@ import { FindAllUsersProvider } from './providers/actions/find-all-user.js';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 import { UpdatePasswordInDatabaseProvider } from './providers/actions/update-password-in-database.provider.js';
 import { UploadsModule } from '../uploads/uploads.module.js';
-import { UploadAvatarProvider } from './providers/actions/upload-user-avatar.js';
+import { UploadAvatarProvider } from './providers/actions/upload-user-avatar.provider.js';
 
 @Module({
   imports: [
