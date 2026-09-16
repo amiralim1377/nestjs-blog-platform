@@ -4,9 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UploadsController } from './uploads.controller.js';
 import { UploadsService } from './providers/uploads.service.js';
 import { Upload } from './entities/upload.entity.js';
-import { SupabaseStorageService } from './storage/supabase-storage.service.js';
-import { LocalStorageService } from './storage/local-storage.service.js';
 import { STORAGE_SERVICE } from './constants/upload.constants.js';
+import { DeleteFileProvider } from './providers/actions/delete-file.provider.js';
+import { SupabaseStorageService } from './providers/storage/supabase-storage.service.js';
+import { LocalStorageService } from './providers/storage/local-storage.service.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Upload])],
@@ -15,6 +16,7 @@ import { STORAGE_SERVICE } from './constants/upload.constants.js';
     UploadsService,
     SupabaseStorageService,
     LocalStorageService,
+    DeleteFileProvider,
     {
       provide: STORAGE_SERVICE,
       inject: [ConfigService, SupabaseStorageService, LocalStorageService],
