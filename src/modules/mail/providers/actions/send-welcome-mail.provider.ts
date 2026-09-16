@@ -13,7 +13,7 @@ export class SendWelcomeMailProvider {
 
   constructor(private readonly mailerService: MailerService) {}
 
-  @OnEvent(UserCreatedEvent.name, { async: true })
+  @OnEvent(UserCreatedEvent.EVENT_NAME, { async: true })
   public async sendMail(event: UserCreatedEvent): Promise<boolean> {
     try {
       await this.mailerService.sendMail({
