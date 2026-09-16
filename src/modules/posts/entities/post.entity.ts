@@ -15,6 +15,7 @@ import { PostType } from '../enums/post-type.enum.js';
 import { PostStatus } from '../enums/post-status.enum.js';
 import { User } from '../../users/entities/user.entity.js';
 import type { Relation } from 'typeorm';
+import { Tag } from '../../../tags/entities/tag.entity.js';
 
 @Entity('posts')
 export class Post {
@@ -64,9 +65,6 @@ export class Post {
   })
   publishOn?: Date | null;
 
-  @ManyToOne(() => User, (user) => user.posts)
-  author: Relation<User>;
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -75,4 +73,11 @@ export class Post {
 
   @DeleteDateColumn()
   deletedAt?: Date;
+
+  @ManyToOne(() => User, (user) => user.posts)
+  author: Relation<User>;
+
+  @ManyToMany(() => Tag, (tag) => tag.posts)
+  @JoinTable({ name: 'posts_tags' })
+  tags: Tag[];
 }
