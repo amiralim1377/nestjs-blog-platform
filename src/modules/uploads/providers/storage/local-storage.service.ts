@@ -7,9 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';
-import { StorageService } from '../interfaces/storage-service.interface.js';
-import type { FileMetadata } from '../interfaces/file-metadata.interface.js';
-import { StorageProviders } from '../enums/storage-providers.enum.js';
+import { StorageService } from '../../interfaces/storage-service.interface.js';
+import { StorageProviders } from '../../enums/storage-providers.enum.js';
+import { FileMetadata } from '../../interfaces/file-metadata.interface.js';
 
 @Injectable()
 export class LocalStorageService implements StorageService {
