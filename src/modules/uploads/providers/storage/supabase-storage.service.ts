@@ -5,13 +5,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { StorageService } from '../interfaces/storage-service.interface.js';
-import type { FileMetadata } from '../interfaces/file-metadata.interface.js';
-import { StorageProviders } from '../enums/storage-providers.enum.js';
 import { randomUUID } from 'crypto';
 import * as path from 'path';
 import { SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_CLIENT } from '../../supabase/supabase.provider.js';
+import { SUPABASE_CLIENT } from '../../../supabase/supabase.provider.js';
+import { StorageProviders } from '../../enums/storage-providers.enum.js';
+import { StorageService } from '../../interfaces/storage-service.interface.js';
+import type { FileMetadata } from '../../interfaces/file-metadata.interface.js';
 
 @Injectable()
 export class SupabaseStorageService implements StorageService {
