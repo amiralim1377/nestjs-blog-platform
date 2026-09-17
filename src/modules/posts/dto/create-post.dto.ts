@@ -8,27 +8,34 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
   Matches,
   MaxLength,
 } from 'class-validator';
-import { PostType } from '../enums/post-type.enum.js';
-import { PostStatus } from '../enums/post-status.enum.js';
 import { Type } from 'class-transformer';
-import { JoinColumn, ManyToOne } from 'typeorm';
-import { User } from '../../users/entities/user.entity.js';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+import { PostType } from '../enums/post-type.enum.js';
+import { PostStatus } from '../enums/post-status.enum.js';
+
 export class CreatePostDto {
+  @ApiProperty({
+    example: 'مقدمه‌ای بر NestJS',
+    description: 'The title of the post',
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(512)
   title: string;
 
+  @ApiProperty({
+    enum: PostType,
+    description: 'Type of the post (e.g., article, video)',
+  })
   @IsEnum(PostType)
   @IsNotEmpty()
   postType: PostType;
 
+  @ApiProperty({ example: 'my-first-post', description: 'URL-friendly slug' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(256)
@@ -38,10 +45,12 @@ export class CreatePostDto {
   })
   slug: string;
 
+  @ApiPropertyOptional({ description: 'HTML or Markdown content' })
   @IsString()
   @IsOptional()
   content?: string;
 
+  @ApiPropertyOptional({ description: 'Optional JSON schema for dynamic data' })
   @IsJSON()
   @IsOptional()
   schema?: string;
@@ -55,6 +64,7 @@ export class CreatePostDto {
   @MaxLength(255)
   coverImage?: string;
 
+  @ApiPropertyOptional({ description: 'Future publish date' })
   @IsDate()
   @Type(() => Date)
   @IsOptional()
@@ -64,13 +74,6 @@ export class CreatePostDto {
   @IsOptional()
   @IsEnum(PostStatus)
   status?: PostStatus;
-
-  @ManyToOne(() => User, (user) => user.posts, {
-    eager: false,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'authorId' })
-  author: User;
 
   @ApiProperty({
     example: [1, 2],
