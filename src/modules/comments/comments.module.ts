@@ -6,17 +6,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Comment } from './entities/comment.entity.js';
 import { CreateCommentProvider } from './providers/actions/create-comment.provider.js';
 import { UsersModule } from '../users/users.module.js';
-import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 import { FindPostCommentsProvider } from './providers/actions/find-post-comments.provider.js';
 import { FindCommentRepliesProvider } from './providers/actions/find-comment-replies.provider.js';
 import { DeleteCommentProvider } from './providers/actions/delete-comment.provider.js';
+import { PaginationModule } from '../../common/pagination/pagination.module.js';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Comment]),
+    PaginationModule,
     PostsModule,
     UsersModule,
-    PaginationProvider,
   ],
   controllers: [CommentsController],
   providers: [
