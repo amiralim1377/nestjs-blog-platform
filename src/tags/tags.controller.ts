@@ -9,6 +9,8 @@ import {
   HttpCode,
   HttpStatus,
   ParseIntPipe,
+  Query,
+  Req,
 } from '@nestjs/common';
 import { TagsService } from './providers/tags.service.js';
 import { CreateTagDto } from './dto/create-tag.dto.js';
@@ -18,6 +20,8 @@ import { Auth } from '../modules/auth/decorator/auth.decorator.js';
 import { AuthType } from '../modules/auth/enums/auth-type.enum.js';
 import { Roles } from '../modules/auth/decorator/roles.decorator.js';
 import { UserRole } from '../modules/users/enums/user-role.enum.js';
+import { GetTagDto } from './dto/get-tags.dto.js';
+import type { Request } from 'express';
 
 @Controller('tags')
 export class TagsController {
@@ -64,6 +68,19 @@ export class TagsController {
     @Body() updateTagDto: UpdateTagDto,
   ) {
     return this.tagsService.updateTag(tagId, updateTagDto);
+  }
+
+  @Get()
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({ summary: 'Get all tags with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of all tags fetched successfully.',
+  })
+  public async getTags(@Query() getTagDto: GetTagDto, @Req() request: Request) {
+    const currentUrl = `${request.protocol}://${request.headers.host}${request.path}`;
+
+    return this.tagsService.findAll(getTagDto, currentUrl);
   }
 
   @Delete(':id')
