@@ -8,10 +8,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
+import { Comment } from '../../comments/entities/comment.entity.js';
 
 import { PostType } from '../enums/post-type.enum.js';
 import { PostStatus } from '../enums/post-status.enum.js';
@@ -90,4 +92,7 @@ export class Post {
   @ManyToMany(() => Category, (category) => category.posts)
   @JoinTable({ name: 'posts_categories' })
   categories: Relation<Category>[];
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Relation<Comment>[];
 }
