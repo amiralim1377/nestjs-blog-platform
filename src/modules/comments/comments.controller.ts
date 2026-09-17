@@ -8,6 +8,7 @@ import {
   HttpStatus,
   Query,
   Req,
+  Delete,
 } from '@nestjs/common';
 import { CommentsService } from './providers/comments.service.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
@@ -75,5 +76,22 @@ export class CommentsController {
       queryDto,
       currentUrl,
     );
+  }
+
+  @Delete(':id')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a comment (Soft Delete)' })
+  @ApiResponse({ status: 200, description: 'Comment successfully deleted.' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: You can only delete your own comments.',
+  })
+  @ApiResponse({ status: 404, description: 'Comment not found.' })
+  public async deleteComment(
+    @Param('id') id: number,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.commentsService.deleteComment(id, user);
   }
 }
