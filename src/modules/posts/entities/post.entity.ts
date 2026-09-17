@@ -8,14 +8,14 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
+
 import { PostType } from '../enums/post-type.enum.js';
 import { PostStatus } from '../enums/post-status.enum.js';
 import { User } from '../../users/entities/user.entity.js';
-import type { Relation } from 'typeorm';
 import { Tag } from '../../tags/entities/tag.entity.js';
 import { Category } from '../../categories/entities/category.entity.js';
 
@@ -81,13 +81,13 @@ export class Post {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'authorId' })
-  author: User;
+  author: Relation<User>;
 
   @ManyToMany(() => Tag, (tag) => tag.posts)
   @JoinTable({ name: 'posts_tags' })
-  tags: Tag[];
+  tags: Relation<Tag>[];
 
   @ManyToMany(() => Category, (category) => category.posts)
   @JoinTable({ name: 'posts_categories' })
-  categories: Category[];
+  categories: Relation<Category>[];
 }
