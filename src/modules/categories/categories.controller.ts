@@ -33,6 +33,25 @@ import { UpdateCategoryDto } from '../categories/dto/update-category.dto.js';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @Get()
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiOperation({
+    summary: 'Get all categories with pagination',
+    description:
+      'Fetches a paginated list of categories with optional search. Public access.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of categories fetched successfully.',
+  })
+  public async getCategories(
+    @Query() getCategoriesDto: GetCategoriesDto,
+    @Req() request: Request,
+  ) {
+    const currentUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`;
+    return this.categoriesService.findAll(getCategoriesDto, currentUrl);
+  }
+
   @Post()
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiBearerAuth()
@@ -58,6 +77,7 @@ export class CategoriesController {
   }
 
   @Get('autocomplete')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({
     summary: 'Predictive search for categories (Autocomplete)',
     description:
@@ -73,24 +93,6 @@ export class CategoriesController {
   })
   public async autocomplete(@Query() dto: CategoryAutocompleteDto) {
     return this.categoriesService.getAutocompleteSuggestions(dto);
-  }
-
-  @Get()
-  @ApiOperation({
-    summary: 'Get all categories with pagination',
-    description:
-      'Fetches a paginated list of categories with optional search. Public access.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of categories fetched successfully.',
-  })
-  public async getCategories(
-    @Query() getCategoriesDto: GetCategoriesDto,
-    @Req() request: Request,
-  ) {
-    const currentUrl = `${request.protocol}://${request.get('host')}${request.originalUrl}`;
-    return this.categoriesService.findAll(getCategoriesDto, currentUrl);
   }
 
   @Patch(':id')
