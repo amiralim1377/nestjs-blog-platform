@@ -16,6 +16,7 @@ import { PostStatus } from '../enums/post-status.enum.js';
 import { User } from '../../users/entities/user.entity.js';
 import type { Relation } from 'typeorm';
 import { Tag } from '../../tags/entities/tag.entity.js';
+import { Category } from '../../categories/entities/category.entity.js';
 
 @Entity('posts')
 export class Post {
@@ -80,4 +81,8 @@ export class Post {
   @ManyToMany(() => Tag, (tag) => tag.posts)
   @JoinTable({ name: 'posts_tags' })
   tags: Tag[];
+
+  @ManyToMany(() => Category, (category) => category.posts)
+  @JoinTable()
+  categories: Category[];
 }
