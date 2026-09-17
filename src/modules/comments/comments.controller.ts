@@ -24,7 +24,7 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
-  @Auth(AuthType.Bearer)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new comment or reply to an existing one' })
