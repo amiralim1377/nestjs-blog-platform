@@ -11,6 +11,7 @@ import {
 import { UserRole } from '../enums/user-role.enum.js';
 import { Exclude } from 'class-transformer';
 import { Post } from '../../posts/entities/post.entity.js';
+import { Comment } from '../../comments/entities/comment.entity.js';
 
 @Entity('users')
 export class User {
@@ -68,4 +69,7 @@ export class User {
 
   @OneToMany(() => Post, (post) => post.author)
   posts?: Relation<Post>[];
+
+  @OneToMany(() => Comment, (comment) => comment.author)
+  comments: Relation<Comment>[];
 }
