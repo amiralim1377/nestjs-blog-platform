@@ -8,6 +8,7 @@ import { GetCategoriesDto } from '../dto/get-categories.dto.js';
 import { UpdateCategoryDto } from '../dto/update-category.dto.js';
 import { CreateCategoryDto } from '../dto/create-category.dto.js';
 import { CategoryAutocompleteDto } from '../dto/category-autocomplete.dto.js';
+import { FindMultipleCategoriesProvider } from './actions/find-multiple-categories.provider.js';
 
 @Injectable()
 export class CategoriesService {
@@ -17,6 +18,7 @@ export class CategoriesService {
     private readonly updateCategoryProvider: UpdateCategoryProvider,
     private readonly deleteCategoryProvider: DeleteCategoryProvider,
     private readonly findAllCategoriesProvider: FindAllCategoriesProvider,
+    private readonly findMultipleCategoriesProvider: FindMultipleCategoriesProvider,
   ) {}
 
   async findAll(getCategoriesDto: GetCategoriesDto, currentUrl: string) {
@@ -43,5 +45,9 @@ export class CategoriesService {
 
   async deleteCategory(id: number) {
     return await this.deleteCategoryProvider.deleteCategory(id);
+  }
+
+  public async findMultipleCategories(categoryIds: number[]) {
+    return await this.findMultipleCategoriesProvider.findMultiple(categoryIds);
   }
 }
