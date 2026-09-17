@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DeleteTagProvider } from './providers/actions/delete-tag.provider.js';
 import { FindAllTagProvider } from './providers/actions/find-all-tags.provider.js';
 import { PaginationModule } from '../../common/pagination/pagination.module.js';
+import { FindOrCreateTagsProvider } from './providers/actions/find-or-create.provider.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Tag]), PaginationModule],
@@ -18,6 +19,9 @@ import { PaginationModule } from '../../common/pagination/pagination.module.js';
     UpdateTagProvider,
     DeleteTagProvider,
     FindAllTagProvider,
+    FindOrCreateTagsProvider,
   ],
+
+  exports: [TagsService],
 })
 export class TagsModule {}
