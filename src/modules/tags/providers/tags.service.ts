@@ -6,6 +6,7 @@ import { UpdateTagProvider } from './actions/update-tag.provider.js';
 import { DeleteTagProvider } from './actions/delete-tag.provider.js';
 import { GetTagDto } from '../dto/get-tags.dto.js';
 import { FindAllTagProvider } from './actions/find-all-tags.provider.js';
+import { FindOrCreateTagsProvider } from './actions/find-or-create.provider.js';
 
 @Injectable()
 export class TagsService {
@@ -14,6 +15,7 @@ export class TagsService {
     private readonly updateTagProvider: UpdateTagProvider,
     private readonly deleteTagProvider: DeleteTagProvider,
     private readonly findAllTagProvider: FindAllTagProvider,
+    private readonly findOrCreateTagsProvider: FindOrCreateTagsProvider,
   ) {}
 
   async createTag(createTagDto: CreateTagDto) {
@@ -30,5 +32,9 @@ export class TagsService {
 
   async findAll(getTagsDto: GetTagDto, currentUrl: string) {
     return await this.findAllTagProvider.findAllTag(getTagsDto, currentUrl);
+  }
+
+  public async findOrCreateMultiple(tagNames: string[]) {
+    return await this.findOrCreateTagsProvider.findOrCreate(tagNames);
   }
 }
