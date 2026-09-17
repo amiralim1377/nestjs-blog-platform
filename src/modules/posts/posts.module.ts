@@ -20,6 +20,8 @@ import { PublishPostProvider } from './providers/actions/publish-post.provider.j
 import { UnPublishPostProvider } from './providers/actions/unpublish.provider.js';
 import { UploadPostCoverProvider } from './providers/actions/upload-post-cover.provider.js';
 import { UploadsModule } from '../uploads/uploads.module.js';
+import { CategoriesModule } from '../categories/categories.module.js';
+import { TagsModule } from '../tags/tags.module.js';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { UploadsModule } from '../uploads/uploads.module.js';
     TypeOrmModule.forFeature([Post]),
     PaginationModule,
     UploadsModule,
+    CategoriesModule,
+    TagsModule,
   ],
   controllers: [PostsController],
   providers: [
