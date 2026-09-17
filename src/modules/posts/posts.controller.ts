@@ -206,6 +206,22 @@ export class PostsController {
     return this.postsService.restoreDeletedPost(postId, user);
   }
 
+  @Get('slug/:slug')
+  @Auth(AuthType.None)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiOperation({ summary: 'Retrieves a single blog post by its slug.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Post retrieved successfully.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Post not found.',
+  })
+  public getPostBySlug(@Param('slug') slug: string) {
+    return this.postsService.findBySlug(slug);
+  }
+
   @Patch(':id')
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -244,22 +260,6 @@ export class PostsController {
   })
   public getPostById(@Param('id', ParseIntPipe) postId: number) {
     return this.postsService.findById(postId);
-  }
-
-  @Get('slug/:slug')
-  @Auth(AuthType.None)
-  @UseInterceptors(ClassSerializerInterceptor)
-  @ApiOperation({ summary: 'Retrieves a single blog post by its slug.' })
-  @ApiResponse({
-    status: 200,
-    description: 'Post retrieved successfully.',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Post not found.',
-  })
-  public getPostBySlug(@Param('slug') slug: string) {
-    return this.postsService.findBySlug(slug);
   }
 
   @Patch(':id/publish')
