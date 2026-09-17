@@ -52,7 +52,7 @@ export class Post {
   content?: string;
 
   @Column({ type: 'json', nullable: true })
-  schema?: string;
+  schema?: Record<string, any>;
 
   @Column({ type: 'varchar', length: 1024, nullable: true })
   coverImage?: string;
@@ -88,6 +88,6 @@ export class Post {
   tags: Tag[];
 
   @ManyToMany(() => Category, (category) => category.posts)
-  @JoinTable()
+  @JoinTable({ name: 'posts_categories' })
   categories: Category[];
 }
