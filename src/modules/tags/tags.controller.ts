@@ -16,12 +16,12 @@ import { TagsService } from './providers/tags.service.js';
 import { CreateTagDto } from './dto/create-tag.dto.js';
 import { UpdateTagDto } from './dto/update-tag.dto.js';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { Auth } from '../modules/auth/decorator/auth.decorator.js';
-import { AuthType } from '../modules/auth/enums/auth-type.enum.js';
-import { Roles } from '../modules/auth/decorator/roles.decorator.js';
-import { UserRole } from '../modules/users/enums/user-role.enum.js';
 import { GetTagDto } from './dto/get-tags.dto.js';
 import type { Request } from 'express';
+import { Auth } from '../auth/decorator/auth.decorator.js';
+import { AuthType } from '../auth/enums/auth-type.enum.js';
+import { Roles } from '../auth/decorator/roles.decorator.js';
+import { UserRole } from '../users/enums/user-role.enum.js';
 
 @Controller('tags')
 export class TagsController {

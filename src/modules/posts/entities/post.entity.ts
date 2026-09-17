@@ -15,7 +15,7 @@ import { PostType } from '../enums/post-type.enum.js';
 import { PostStatus } from '../enums/post-status.enum.js';
 import { User } from '../../users/entities/user.entity.js';
 import type { Relation } from 'typeorm';
-import { Tag } from '../../../tags/entities/tag.entity.js';
+import { Tag } from '../../tags/entities/tag.entity.js';
 
 @Entity('posts')
 export class Post {

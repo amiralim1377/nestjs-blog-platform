@@ -1,6 +1,6 @@
 import { IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiPropertyOptional, IntersectionType } from '@nestjs/swagger';
-import { PaginationQueryDto } from '../../common/pagination/dto/pagination.query.dto.js';
+import { PaginationQueryDto } from '../../../common/pagination/dto/pagination.query.dto.js';
 
 export class GetTagBaseDto {
   @ApiPropertyOptional({

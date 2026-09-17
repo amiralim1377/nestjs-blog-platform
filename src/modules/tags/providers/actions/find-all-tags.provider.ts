@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from '../../entities/tag.entity.js';
 import { Repository, ILike } from 'typeorm';
-import { PaginationProvider } from '../../../common/pagination/providers/pagination.providers.js';
 import { GetTagDto } from '../../dto/get-tags.dto.js';
+import { PaginationProvider } from '../../../../common/pagination/providers/pagination.providers.js';
 
 @Injectable()
 export class FindAllTagProvider {

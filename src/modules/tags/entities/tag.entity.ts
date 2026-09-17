@@ -6,7 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Post } from '../../modules/posts/entities/post.entity.js';
+import { Post } from '../../posts/entities/post.entity.js';
 
 @Entity('tags')
 export class Tag {
