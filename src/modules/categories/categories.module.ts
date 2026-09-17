@@ -8,6 +8,7 @@ import { DeleteCategoryProvider } from './providers/actions/delete-category.prov
 import { PaginationModule } from '../../common/pagination/pagination.module.js';
 import { Category } from './entities/category.entity.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FindAllCategoriesProvider } from './providers/actions/find-all-categories.provider.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category]), PaginationModule],
@@ -18,6 +19,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AutocompleteCategoryProvider,
     UpdateCategoryProvider,
     DeleteCategoryProvider,
+    FindAllCategoriesProvider,
   ],
 })
 export class CategoriesModule {}
