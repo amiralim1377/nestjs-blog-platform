@@ -5,7 +5,6 @@ import { CreatePostProvider } from './actions/create-post.provider.js';
 import { UpdatePostDto } from '../dto/update-post.dto.js';
 import { UpdatePostProvider } from './actions/update-post.provider.js';
 import { DeletePostProvider } from './actions/delete-post.provider.js';
-import { FindAllPostsProvider } from './actions/find-all-post.provider.js';
 import { GetPostsDto } from '../dto/get-posts.dto.js';
 import { FindPostBySlugProvider } from './actions/find-post-by-slug.js';
 import { FindPostByIdProvider } from './actions/find-by-id.provider.js';
@@ -17,12 +16,13 @@ import { FindMyPostProvider } from './actions/find-my-post.provider.js';
 import { PublishPostProvider } from './actions/publish-post.provider.js';
 import { UnPublishPostProvider } from './actions/unpublish.provider.js';
 import { UploadPostCoverProvider } from './actions/upload-post-cover.provider.js';
+import { FindAllPostsProvider } from './actions/find-all-post.provider.js';
 
 @Injectable()
 export class PostsService {
   constructor(
     private readonly createPostProvider: CreatePostProvider,
-    private readonly UpdatePostProvider: UpdatePostProvider,
+    private readonly updatePostProvider: UpdatePostProvider,
     private readonly deletePostProvider: DeletePostProvider,
     private readonly findAllPostsProvider: FindAllPostsProvider,
     private readonly findPostBySlugProvider: FindPostBySlugProvider,
@@ -46,7 +46,7 @@ export class PostsService {
     updatePostDto: UpdatePostDto,
     user: ActiveUserData,
   ) {
-    return await this.UpdatePostProvider.update(postId, updatePostDto, user);
+    return await this.updatePostProvider.update(postId, updatePostDto, user);
   }
 
   async delete(postId: number, user: ActiveUserData) {
