@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -75,8 +76,12 @@ export class Post {
   @DeleteDateColumn()
   deletedAt?: Date;
 
-  @ManyToOne(() => User, (user) => user.posts)
-  author: Relation<User>;
+  @ManyToOne(() => User, (user) => user.posts, {
+    eager: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'authorId' })
+  author: User;
 
   @ManyToMany(() => Tag, (tag) => tag.posts)
   @JoinTable({ name: 'posts_tags' })
