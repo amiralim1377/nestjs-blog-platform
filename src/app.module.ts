@@ -28,6 +28,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { BullModule } from '@nestjs/bullmq';
 import { TagsModule } from './modules/tags/tags.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
+import { CommentsModule } from './modules/comments/comments.module.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -130,6 +131,7 @@ const ENV = process.env.NODE_ENV;
     SupabaseModule,
     TagsModule,
     CategoriesModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [
