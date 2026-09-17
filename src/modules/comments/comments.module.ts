@@ -9,6 +9,7 @@ import { UsersModule } from '../users/users.module.js';
 import { PaginationProvider } from '../../common/pagination/providers/pagination.providers.js';
 import { FindPostCommentsProvider } from './providers/actions/find-post-comments.provider.js';
 import { FindCommentRepliesProvider } from './providers/actions/find-comment-replies.provider.js';
+import { DeleteCommentProvider } from './providers/actions/delete-comment.provider.js';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FindCommentRepliesProvider } from './providers/actions/find-comment-rep
     CreateCommentProvider,
     FindPostCommentsProvider,
     FindCommentRepliesProvider,
+    DeleteCommentProvider,
   ],
   exports: [CommentsService],
 })
