@@ -50,6 +50,6 @@ import { TagsModule } from '../tags/tags.module.js';
     UnPublishPostProvider,
     UploadPostCoverProvider,
   ],
-  exports: [],
+  exports: [PostsService],
 })
 export class PostsModule {}
