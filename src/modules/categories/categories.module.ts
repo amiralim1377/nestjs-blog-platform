@@ -9,6 +9,7 @@ import { PaginationModule } from '../../common/pagination/pagination.module.js';
 import { Category } from './entities/category.entity.js';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FindAllCategoriesProvider } from './providers/actions/find-all-categories.provider.js';
+import { FindMultipleCategoriesProvider } from './providers/actions/find-multiple-categories.provider.js';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category]), PaginationModule],
@@ -20,6 +21,8 @@ import { FindAllCategoriesProvider } from './providers/actions/find-all-categori
     UpdateCategoryProvider,
     DeleteCategoryProvider,
     FindAllCategoriesProvider,
+    FindMultipleCategoriesProvider,
   ],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}
