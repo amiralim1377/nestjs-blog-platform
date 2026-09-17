@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from '../../entities/tag.entity.js';
 import { CreateTagDto } from '../../dto/create-tag.dto.js';
-import { tryCatch } from 'bullmq';
 
 @Injectable()
 export class CreateTagProvider {
