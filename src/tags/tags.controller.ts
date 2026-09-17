@@ -16,6 +16,8 @@ import { UpdateTagDto } from './dto/update-tag.dto.js';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Auth } from '../modules/auth/decorator/auth.decorator.js';
 import { AuthType } from '../modules/auth/enums/auth-type.enum.js';
+import { Roles } from '../modules/auth/decorator/roles.decorator.js';
+import { UserRole } from '../modules/users/enums/user-role.enum.js';
 
 @Controller('tags')
 export class TagsController {
@@ -62,5 +64,21 @@ export class TagsController {
     @Body() updateTagDto: UpdateTagDto,
   ) {
     return this.tagsService.updateTag(tagId, updateTagDto);
+  }
+
+  @Delete(':id')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Delete a tag (Admin/Author only)' })
+  @ApiResponse({
+    status: 200,
+    description: 'The tag has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Tag not found.',
+  })
+  public async deleteTag(@Param('id', ParseIntPipe) id: number) {
+    return this.tagsService.delete(id);
   }
 }
