@@ -5,6 +5,7 @@ import { ActiveUserData } from '../../auth/interfaces/active-user-data.interface
 import { FindPostCommentsProvider } from './actions/find-post-comments.provider.js';
 import { FindCommentRepliesProvider } from './actions/find-comment-replies.provider.js';
 import { GetPostsDto } from '../../posts/dto/get-posts.dto.js';
+import { DeleteCommentProvider } from './actions/delete-comment.provider.js';
 
 @Injectable()
 export class CommentsService {
@@ -12,6 +13,7 @@ export class CommentsService {
     private readonly createCommentProvider: CreateCommentProvider,
     private readonly findPostCommentsProvider: FindPostCommentsProvider,
     private readonly findCommentRepliesProvider: FindCommentRepliesProvider,
+    private readonly deleteCommentProvider: DeleteCommentProvider,
   ) {}
 
   public async createComment(
@@ -43,5 +45,9 @@ export class CommentsService {
       queryDto,
       currentUrl,
     );
+  }
+
+  public async deleteComment(commentId: number, user: ActiveUserData) {
+    return await this.deleteCommentProvider.delete(commentId, user);
   }
 }
