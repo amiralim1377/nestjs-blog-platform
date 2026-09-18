@@ -21,13 +21,14 @@ import { CookieProvider } from './providers/cookie/cookie.provider.js';
 import type { Request, Response } from 'express';
 import { AuthCreateUserDto } from './dto/create-user.dto.js';
 import { Throttle } from '@nestjs/throttler';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import type { ActiveUserData } from './interfaces/active-user-data.interface.js';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto.js';
 import { ActiveUser } from './decorator/active-user.decorator.js';
 import { ResetPasswordDto } from './dto/reset-password.dto.js';
 import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -40,6 +41,15 @@ export class AuthController {
   @Auth(AuthType.None)
   @UseInterceptors(ClassSerializerInterceptor)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @ApiOperation({ summary: 'Registers a new user account.' })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid data or user already exists.',
+  })
   async register(
     @Body() createUserDto: AuthCreateUserDto,
     @Res({ passthrough: true }) response: Response,
@@ -59,6 +69,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.None)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @ApiOperation({
+    summary: 'Authenticates a user and returns access/refresh tokens.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User logged in successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Invalid credentials / Unauthorized.',
+  })
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
@@ -78,6 +99,17 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.Bearer, AuthType.Cookie)
   @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @ApiOperation({
+    summary: 'Logs out the authenticated user and clears cookies.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User logged out successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
+  })
   async logout(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
@@ -99,6 +131,17 @@ export class AuthController {
   @Post('refresh-tokens')
   @HttpCode(HttpStatus.CREATED)
   @Auth(AuthType.None)
+  @ApiOperation({
+    summary: 'Generates new access and refresh tokens via cookie.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Tokens refreshed successfully.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh token missing or invalid.',
+  })
   async createRefreshTokens(
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
@@ -123,6 +166,15 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.None)
+  @ApiOperation({ summary: 'Initiates the password reset process.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset link sent to email (if exists).',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid request data.',
+  })
   public async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
@@ -130,6 +182,15 @@ export class AuthController {
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   @Auth(AuthType.None)
+  @ApiOperation({ summary: 'Resets the user password using a token.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Password has been reset successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid or expired reset token.',
+  })
   public async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassword(resetPasswordDto);
   }
@@ -145,7 +206,7 @@ export class AuthController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid password.',
+    description: 'Invalid password format.',
   })
   @ApiResponse({
     status: 404,
