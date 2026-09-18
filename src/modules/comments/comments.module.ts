@@ -10,6 +10,7 @@ import { FindPostCommentsProvider } from './providers/actions/find-post-comments
 import { FindCommentRepliesProvider } from './providers/actions/find-comment-replies.provider.js';
 import { DeleteCommentProvider } from './providers/actions/delete-comment.provider.js';
 import { PaginationModule } from '../../common/pagination/pagination.module.js';
+import { UpdateCommentProvider } from './providers/actions/update-comment.provider.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PaginationModule } from '../../common/pagination/pagination.module.js';
     FindPostCommentsProvider,
     FindCommentRepliesProvider,
     DeleteCommentProvider,
+    UpdateCommentProvider,
   ],
   exports: [CommentsService],
 })
