@@ -14,6 +14,7 @@ import { ActiveUserData } from '../../../auth/interfaces/active-user-data.interf
 import { CategoriesService } from '../../../categories/providers/categories.service.js';
 import { TagsService } from '../../../tags/providers/tags.service.js';
 import { Tag } from '../../../tags/entities/tag.entity.js';
+import { GenerateSlugProvider } from './generate-slug.provider.js';
 
 @Injectable()
 export class CreatePostProvider {
@@ -23,11 +24,12 @@ export class CreatePostProvider {
     private readonly usersService: UsersService,
     private readonly categoriesService: CategoriesService,
     private readonly tagsService: TagsService,
+    private readonly generateSlugProvider: GenerateSlugProvider,
   ) {}
 
   async create(createPostDto: CreatePostDto, user: ActiveUserData) {
     // 1. Extract fields that require special processing from the rest of the DTO
-    const { categoryIds, tags, schema, ...restDto } = createPostDto;
+    const { categoryIds, tags, schema, slug, ...restDto } = createPostDto;
 
     // 2. Validate and find the author creating the post
     let author;
@@ -54,6 +56,10 @@ export class CreatePostProvider {
       postTags = await this.tagsService.findOrCreateMultiple(tags);
     }
 
+    const baseSlugStr = slug || restDto.title;
+    const uniqueSlug =
+      await this.generateSlugProvider.generateUniqueSlug(baseSlugStr);
+
     // 6. Create a new post entity with standard data and correct relations
     const newPost = this.postRepository.create({
       ...restDto,
@@ -61,6 +67,7 @@ export class CreatePostProvider {
       author, // Assign the author entity
       categories, // Assign the category entities (Many-to-Many relation)
       tags: postTags, // Assign the tag entities (Many-to-Many relation)
+      slug: uniqueSlug,
     });
 
     // 7. Save to the database and handle potential duplicate slug errors
