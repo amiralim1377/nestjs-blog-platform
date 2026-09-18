@@ -9,6 +9,8 @@ import {
   Query,
   Req,
   Delete,
+  Patch,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CommentsService } from './providers/comments.service.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
@@ -19,6 +21,7 @@ import { ActiveUser } from '../auth/decorator/active-user.decorator.js';
 import type { ActiveUserData } from '../auth/interfaces/active-user-data.interface.js';
 import { GetPostsDto } from '../posts/dto/get-posts.dto.js';
 import type { Request } from 'express';
+import { UpdateCommentDto } from './dto/update-comment.dto.js';
 
 @Controller('comments')
 export class CommentsController {
@@ -93,5 +96,22 @@ export class CommentsController {
     @ActiveUser() user: ActiveUserData,
   ) {
     return this.commentsService.deleteComment(id, user);
+  }
+
+  @Patch(':id')
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update an existing comment' })
+  @ApiResponse({ status: 200, description: 'Comment successfully updated.' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden. You can only edit your own comments.',
+  })
+  public async updateComment(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+    @ActiveUser() user: ActiveUserData,
+  ) {
+    return this.commentsService.updateComment(id, updateCommentDto, user);
   }
 }
