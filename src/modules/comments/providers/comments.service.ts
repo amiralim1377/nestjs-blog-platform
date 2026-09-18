@@ -6,6 +6,8 @@ import { FindPostCommentsProvider } from './actions/find-post-comments.provider.
 import { FindCommentRepliesProvider } from './actions/find-comment-replies.provider.js';
 import { GetPostsDto } from '../../posts/dto/get-posts.dto.js';
 import { DeleteCommentProvider } from './actions/delete-comment.provider.js';
+import { UpdateCommentProvider } from './actions/update-comment.provider.js';
+import { UpdateCommentDto } from '../dto/update-comment.dto.js';
 
 @Injectable()
 export class CommentsService {
@@ -14,6 +16,7 @@ export class CommentsService {
     private readonly findPostCommentsProvider: FindPostCommentsProvider,
     private readonly findCommentRepliesProvider: FindCommentRepliesProvider,
     private readonly deleteCommentProvider: DeleteCommentProvider,
+    private readonly updateCommentProvider: UpdateCommentProvider,
   ) {}
 
   public async createComment(
@@ -49,5 +52,17 @@ export class CommentsService {
 
   public async deleteComment(commentId: number, user: ActiveUserData) {
     return await this.deleteCommentProvider.delete(commentId, user);
+  }
+
+  public async updateComment(
+    commentId: number,
+    updateCommentDto: UpdateCommentDto,
+    user: ActiveUserData,
+  ) {
+    return await this.updateCommentProvider.update(
+      commentId,
+      updateCommentDto,
+      user,
+    );
   }
 }
