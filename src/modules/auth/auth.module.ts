@@ -22,6 +22,7 @@ import { UpdateUserPasswordProvider } from './providers/authentication/update-us
 import { ResetPasswordProvider } from './providers/authentication/reset-password.provider.js';
 import { ForgotPasswordProvider } from './providers/authentication/forgot-password.provider.js';
 import { MailModule } from '../mail/mail.module.js';
+import { RolesGuard } from './guards/roles/roles.guard.js';
 
 @Module({
   imports: [
@@ -52,6 +53,10 @@ import { MailModule } from '../mail/mail.module.js';
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
   exports: [HashingProvider],
