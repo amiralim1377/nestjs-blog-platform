@@ -22,6 +22,7 @@ import { UploadPostCoverProvider } from './providers/actions/upload-post-cover.p
 import { UploadsModule } from '../uploads/uploads.module.js';
 import { CategoriesModule } from '../categories/categories.module.js';
 import { TagsModule } from '../tags/tags.module.js';
+import { GenerateSlugProvider } from './providers/actions/generate-slug.provider.js';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { TagsModule } from '../tags/tags.module.js';
   controllers: [PostsController],
   providers: [
     PostsService,
+    GenerateSlugProvider,
     CreatePostProvider,
     UpdatePostProvider,
     DeletePostProvider,
