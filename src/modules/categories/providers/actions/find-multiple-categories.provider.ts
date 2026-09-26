@@ -25,6 +25,9 @@ export class FindMultipleCategoriesProvider {
       },
     });
 
+    console.log('Requested IDs:', uniqueIds);
+    console.log('Found categories:', categories);
+
     // 3. Check if we found exactly as many categories as requested
     if (categories.length !== uniqueIds.length) {
       const foundIds = categories.map((category) => category.id);
