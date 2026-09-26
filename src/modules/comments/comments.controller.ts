@@ -11,6 +11,8 @@ import {
   Delete,
   Patch,
   ParseIntPipe,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { CommentsService } from './providers/comments.service.js';
 import { CreateCommentDto } from './dto/create-comment.dto.js';
@@ -22,6 +24,9 @@ import type { ActiveUserData } from '../auth/interfaces/active-user-data.interfa
 import { GetPostsDto } from '../posts/dto/get-posts.dto.js';
 import type { Request } from 'express';
 import { UpdateCommentDto } from './dto/update-comment.dto.js';
+import { PaginationQueryDto } from '../../common/pagination/dto/pagination.query.dto.js';
+import { Roles } from '../auth/decorator/roles.decorator.js';
+import { UserRole } from '../users/enums/user-role.enum.js';
 
 @Controller('comments')
 export class CommentsController {
@@ -29,6 +34,7 @@ export class CommentsController {
 
   @Post()
   @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new comment or reply to an existing one' })
@@ -51,8 +57,26 @@ export class CommentsController {
     return this.commentsService.createComment(createCommentDto, user);
   }
 
+  @Get()
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @Roles(UserRole.USER)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all comments globally (Admin strictly)' })
+  public async getAllComments(
+    @Query() paginationQuery: PaginationQueryDto,
+    @Req() request: Request,
+  ) {
+    const currentUrl = `${request.protocol}://${request.get('host')}${request.path}`;
+
+    return await this.commentsService.getAllComments(
+      paginationQuery,
+      currentUrl,
+    );
+  }
+
   @Get('post/:postId')
-  @Auth(AuthType.None)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
   @ApiOperation({
     summary: 'Get paginated top-level comments for a specific post',
   })
@@ -66,7 +90,8 @@ export class CommentsController {
   }
 
   @Get(':commentId/replies')
-  @Auth(AuthType.None)
+  @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiOperation({ summary: 'Get paginated replies for a specific comment' })
   public async getCommentReplies(
     @Param('commentId') commentId: number,
@@ -100,6 +125,7 @@ export class CommentsController {
 
   @Patch(':id')
   @Auth(AuthType.Bearer, AuthType.Cookie)
+  @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing comment' })
   @ApiResponse({ status: 200, description: 'Comment successfully updated.' })
