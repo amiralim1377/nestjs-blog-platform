@@ -11,6 +11,7 @@ import { FindCommentRepliesProvider } from './providers/actions/find-comment-rep
 import { DeleteCommentProvider } from './providers/actions/delete-comment.provider.js';
 import { PaginationModule } from '../../common/pagination/pagination.module.js';
 import { UpdateCommentProvider } from './providers/actions/update-comment.provider.js';
+import { GetAllCommentsProvider } from './providers/actions/get-all-comments.provider.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { UpdateCommentProvider } from './providers/actions/update-comment.provid
     FindCommentRepliesProvider,
     DeleteCommentProvider,
     UpdateCommentProvider,
+    GetAllCommentsProvider,
   ],
   exports: [CommentsService],
 })
