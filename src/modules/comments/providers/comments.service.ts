@@ -8,6 +8,8 @@ import { GetPostsDto } from '../../posts/dto/get-posts.dto.js';
 import { DeleteCommentProvider } from './actions/delete-comment.provider.js';
 import { UpdateCommentProvider } from './actions/update-comment.provider.js';
 import { UpdateCommentDto } from '../dto/update-comment.dto.js';
+import { GetAllCommentsProvider } from './actions/get-all-comments.provider.js';
+import { PaginationQueryDto } from '../../../common/pagination/dto/pagination.query.dto.js';
 
 @Injectable()
 export class CommentsService {
@@ -17,7 +19,18 @@ export class CommentsService {
     private readonly findCommentRepliesProvider: FindCommentRepliesProvider,
     private readonly deleteCommentProvider: DeleteCommentProvider,
     private readonly updateCommentProvider: UpdateCommentProvider,
+    private readonly getAllCommentsProvider: GetAllCommentsProvider,
   ) {}
+
+  public async getAllComments(
+    paginationQuery: PaginationQueryDto,
+    currentUrl: string,
+  ) {
+    return await this.getAllCommentsProvider.getAllPostComments(
+      paginationQuery,
+      currentUrl,
+    );
+  }
 
   public async createComment(
     createCommentDto: CreateCommentDto,
