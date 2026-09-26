@@ -35,9 +35,11 @@ services:
       - .env
     environment:
       - DATABASE_HOST=postgres
+      - REDIS_URL=redis://redis:6379
     depends_on:
       - postgres
       - redis
+
 volumes:
   postgres_data:
   redis_data:
