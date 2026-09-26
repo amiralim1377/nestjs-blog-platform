@@ -1,0 +1,1068 @@
+{
+  "info": {
+    "_postman_id": "a3f9b78e-e614-4eeb-ba54-b15b8b8c1f08",
+    "name": "nest-blog-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44156985",
+    "_collection_link": "https://go.postman.co/collection/44156985-a3f9b78e-e614-4eeb-ba54-b15b8b8c1f08?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get all users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/users",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post createUser-disabled",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@test.com\",\r\n    \"firstName\": \"amirali\",\r\n    \"lastName\": \"moradi\",\r\n    \"password\": \"test1234@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/users",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post upload user avatar",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/MSI/Desktop/916aa265-1045-4a20-813c-2da7386c5671.webp"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/users/avatar",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "users",
+                "avatar"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update userInfo",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"firstName\": \"amirali-update-then-delete\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/users/dde28dea-2911-4d34-a29a-ca092577df54",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "users",
+                "dde28dea-2911-4d34-a29a-ca092577df54"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update current user password",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"oldPassword\":\"test1234@\",\r\n    \"newPassword\":\"test12345@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/084157f0-3733-4851-8e9b-1dbfe3e28390/password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "084157f0-3733-4851-8e9b-1dbfe3e28390",
+                "password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete soft user",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/users/1fea50b0-6de8-4876-9d9b-34810cfd140f",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "users",
+                "1fea50b0-6de8-4876-9d9b-34810cfd140f"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Post register user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@test.com\",\r\n    \"firstName\": \"user-wants-delete\",\r\n    \"lastName\": \"moradi-2\",\r\n    \"password\": \"test1234@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/register",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user@test.com\",\r\n    \"password\": \"test1234@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/login",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post refresh-token",
+          "request": {
+            "auth": {
+              "type": "bearer"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/refresh-tokens",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh-tokens"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/auth/logout",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post forgot password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"user-1@test.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/forgot-password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post reset-password",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"token\": \"ee4fa3b123bfc5a3af8bd836d26ad3237c3a37908084ac1429b6a60e8d9dca28\",\r\n  \"newPassword\": \"test123456@\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/auth/reset-password",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Post",
+      "item": [
+        {
+          "name": "Get MyDraftPosts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/drafts/me",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "drafts",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/nestjs-authentication-system-guide-11",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "nestjs-authentication-system-guide-11"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "published",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Post by slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/slug/nestjs-authentication-system-guide-11",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "slug",
+                "nestjs-authentication-system-guide-11"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Post by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/2",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/posts/published",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "published"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all DraftPosts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/drafts",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "drafts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get my post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/me",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post create post",
+          "request": {
+            "auth": {
+              "type": "apikey"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"title\": \"آموزش راه‌اندازی سیستم احراز هویت در NestJS\",\r\n  \"postType\": \"post\",\r\n  \"slug\": \"nestjs-authentication-system-guide-87\",\r\n  \"status\": \"published\",\r\n  \"content\": \"<p>در این مقاله به بررسی عمیق استراتژی‌های احراز هویت می‌پردازیم...</p>\",\r\n  \"schema\": \"{\\\"@context\\\":\\\"https://schema.org\\\",\\\"@type\\\":\\\"Article\\\",\\\"headline\\\":\\\"آموزش احراز هویت\\\"}\",\r\n  \"publishOn\": \"2026-09-15T14:30:00.000Z\",\r\n  \"categoryIds\": [1, 2]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/posts",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post cover image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": [
+                    "/C:/Users/MSI/Desktop/images.jpg"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{url}}/posts/27/cover",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "27",
+                "cover"
+              ],
+              "query": [
+                {
+                  "key": "file",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete cover image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/posts/27/cover",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "27",
+                "cover"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/posts/14",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "14"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update post",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"slug\": \"nestjs-authentication-system-guide-3\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/posts/2",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update restore post",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/14/restore",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "14",
+                "restore"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update post publish",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/2/publish",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "2",
+                "publish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update post unpublish",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/posts/2/unpublish",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "posts",
+                "2",
+                "unpublish"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tag",
+      "item": [
+        {
+          "name": "Get find All tag",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/tags",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "tags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post create tag",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Artificial Intelligence\",\r\n  \"slug\": \"artificial-intelligence\",\r\n  \"description\": \"Posts related to AI and Machine Learning\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/tags",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "tags"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update tag",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Artificial Intelligence-update\",\r\n  \"slug\": \"artificial-intelligence-update\",\r\n  \"description\": \"Posts related to AI and Machine Learning-update\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/tags/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "tags",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete tag",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/tags/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "tags",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Find all categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/categories",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete categories",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/categories/id",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "categories",
+                "id"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post create Category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"NestJS\",\r\n  \"slug\": \"nestjs\",\r\n  \"description\": \"Progressive Node.js framework\",\r\n  \"parentId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/categories",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get autocomplete",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/categories/autocomplete?keyword=back",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "categories",
+                "autocomplete"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "back"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update  update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"parentId\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/categories/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "categories",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": ""
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Comments",
+      "item": [
+        {
+          "name": "Create Commnets",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\": \"this is post-comment-test\",\r\n    \"postId\": \"28\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/comments",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get post Commnets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/comments/post/28",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comments",
+                "post",
+                "28"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/comments",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comment Replies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/2/replies",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "2",
+                "replies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete comments",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/comments/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comments",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Commnets",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"content\":\"this is test from update-2. this is test from again\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/comments/1",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "comments",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
