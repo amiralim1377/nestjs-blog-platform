@@ -1,14 +1,16 @@
 # ----- Stage 1: Build -----
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
+
+RUN apk add --no-cache python3 make g++
 
 # Copy package files
 COPY package*.json ./
 
 # Install all dependencies for build
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -18,7 +20,7 @@ RUN npm run build
 
 
 # ----- Stage 2: Production -----
-FROM node:20-alpine AS production
+FROM node:22-alpine AS production
 
 # Set production environment
 ENV NODE_ENV=production
@@ -27,8 +29,10 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm install --only=production
+RUN apk add --no-cache python3 make g++ \
+    && npm pkg delete scripts.prepare \
+    && npm install --omit=dev --legacy-peer-deps \
+    && apk del python3 make g++
 
 # Copy build output
 COPY --from=builder /app/dist ./dist
