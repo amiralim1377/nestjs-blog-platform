@@ -3,7 +3,7 @@ import { Post } from '../../entities/post.entity.js';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GetPostsDto } from '../../dto/get-posts.dto.js';
-import { PaginationProvider } from '../../../../common/pagination/providers/pagination.providers.js';
+import { PaginationProvider } from '../../../../common/pagination/providers/pagination.provider.js';
 import { PostStatus } from '../../enums/post-status.enum.js';
 
 @Injectable()

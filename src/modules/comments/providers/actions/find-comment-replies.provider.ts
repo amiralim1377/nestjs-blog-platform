@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from '../../entities/comment.entity.js';
-import { PaginationProvider } from '../../../../common/pagination/providers/pagination.providers.js';
+import { PaginationProvider } from '../../../../common/pagination/providers/pagination.provider.js';
 import { GetPostsDto } from '../../../posts/dto/get-posts.dto.js';
 
 /**

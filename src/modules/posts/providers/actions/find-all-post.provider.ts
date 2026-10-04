@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm'; // 👈 Added ILike for search
 import { Post } from '../../entities/post.entity.js';
 import { GetPostsDto } from '../../dto/get-posts.dto.js';
-import { PaginationProvider } from '../../../../common/pagination/providers/pagination.providers.js';
+import { PaginationProvider } from '../../../../common/pagination/providers/pagination.provider.js';
 
 @Injectable()
 export class FindAllPostsProvider {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { Category } from '../../entities/category.entity.js';
 import { GetCategoriesDto } from '../../dto/get-categories.dto.js';
-import { PaginationProvider } from '../../../../common/pagination/providers/pagination.providers.js';
+import { PaginationProvider } from '../../../../common/pagination/providers/pagination.provider.js';
 
 @Injectable()
 export class FindAllCategoriesProvider {

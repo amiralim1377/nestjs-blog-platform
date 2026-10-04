@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PaginationProvider } from './providers/pagination.providers.js';
+import { PaginationProvider } from './providers/pagination.provider.js';
 
 @Module({
   providers: [PaginationProvider],
