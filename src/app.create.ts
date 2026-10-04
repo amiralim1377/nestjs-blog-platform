@@ -4,11 +4,6 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 
 export function appCreate(app: INestApplication): void {
-  // app.useGlobalFilters(
-  //   new GlobalExceptionFilter(),
-  //   new TypeOrmExceptionFilter(),
-  // );
-
   // Enable global validation pipes using class-validator
   // This validates incoming requests, strips unauthorized properties, and automatically transforms payloads to DTO classes
   app.useGlobalPipes(
@@ -31,7 +26,7 @@ export function appCreate(app: INestApplication): void {
   // Configure OpenAPI (Swagger) builder for API documentation
   const config = new DocumentBuilder()
     .setTitle('Blog app Api')
-    .setDescription('use the base API URL as http://localhost:3000')
+    .setDescription('Use the base API URL: http://localhost:3000')
     .setTermsOfService('http://localhost:3000/terms-of-service')
     .setLicense('MIT License', 'https://opensource.org/license/mit/')
     .addServer('http://localhost:3000')
