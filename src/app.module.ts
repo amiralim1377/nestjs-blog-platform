@@ -29,6 +29,8 @@ import { BullModule } from '@nestjs/bullmq';
 import { TagsModule } from './modules/tags/tags.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { CommentsModule } from './modules/comments/comments.module.js';
+import { SentryService } from './common/sentry/sentry.service.js';
+import { ErrorLoggerService } from './common/logging/error-logger.service.js';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -136,6 +138,8 @@ const ENV = process.env.NODE_ENV;
   controllers: [AppController],
   providers: [
     AppService,
+    SentryService,
+    ErrorLoggerService,
     {
       provide: APP_INTERCEPTOR,
       useClass: DataResponseInterceptor,
